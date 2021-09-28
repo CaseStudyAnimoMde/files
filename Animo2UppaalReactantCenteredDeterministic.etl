@@ -1,0 +1,497 @@
+import "StdFunctions.etl";
+import "Animo2UppaalReactantCenteredDeterministicStdTexts.etl";
+
+pre{
+	var Math = Native("java.lang.Math");
+}
+
+rule Network2NSTA
+	transform s : Animo!Network
+	to t : Uppaal!NSTA {
+		var reindexedNodes = s.nodes.reindex();
+		var enabledNodes = reindexedNodes.select(node|node.enabled);
+		var enabledEdges = s.edges.select(edge|edge.enabled);  	
+		var havingInfluencingReactionsNodes = enabledNodes.select(node|node.hasInfluencingReactions(enabledEdges));
+		var randomInitialConcentrationNodes = enabledNodes.select(node|node.randomInitialConcentration);
+		t.globalDeclarations = new Uppaal!GlobalDeclarations;
+		t.systemDeclarations = new Uppaal!SystemDeclarations;
+		var globals = new ConcurrentMap;
+		globals.putAll(t.globalDeclarations.createClocks());
+		t.globalDeclarations.createTypeDeclarations();
+		globals.putAll(t.globalDeclarations.createConstants(enabledNodes, s.uncertainty));
+		globals.putAll(t.globalDeclarations.createChannels(globals));
+		globals.putAll(t.globalDeclarations.createVariables(enabledNodes, globals));
+		globals.putAll(t.globalDeclarations.createFunctionDeclarations());
+		globals.putAll(t.globalDeclarations.createReactantConstants(enabledNodes));
+		globals.putAll(t.globalDeclarations.createReactantVariables(enabledNodes));
+		globals.putAll(t.globalDeclarations.createReactionConstants(enabledEdges, s.timeScaleFactor));
+		globals.putAll(t.globalDeclarations.createReactionVariables(enabledEdges));
+		var reactantTemplates = t.createReactantTemplates(s.uncertainty, havingInfluencingReactionsNodes, enabledEdges, not randomInitialConcentrationNodes.isEmpty(), globals);						
+		if(randomInitialConcentrationNodes.notEmpty()) { 
+			t.systemDeclarations.createTemplateDeclarations(havingInfluencingReactionsNodes, reactantTemplates, t.createRandomInitialisationTemplate(randomInitialConcentrationNodes, globals), globals);
+		}
+		else{
+			t.systemDeclarations.createTemplateDeclarations(havingInfluencingReactionsNodes, reactantTemplates, globals);
+		}
+	}
+	
+	operation Uppaal!GlobalDeclarations createClocks() : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("globalTime", self.createClock(new Uppaal!PredefinedType.set("clock").makeClock(), "globalTime"));
+		return r;
+	}
+	
+	operation Uppaal!GlobalDeclarations createChannels(globals : ConcurrentMap) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		
+		var channelVariableDeclaration1 = new Uppaal!ChannelVariableDeclaration.makeBroadcast();
+		r.put("reacted", channelVariableDeclaration1.createChannelVariable("reacted", new Uppaal!IdentifierExpression.set(globals.get("N_REACTANTS"))));
+		self.declaration.add(channelVariableDeclaration1);
+		
+		var channelVariableDeclaration2 = new Uppaal!ChannelVariableDeclaration.makeBroadcast();
+		r.put("reacting", channelVariableDeclaration2.createChannelVariable("reacting"));
+		r.put("do_update", channelVariableDeclaration2.createChannelVariable("do_update"));
+		r.put("decide_react", channelVariableDeclaration2.createChannelVariable("decide_react"));
+		self.declaration.add(channelVariableDeclaration2);
+
+		return r;
+	}
+	
+	operation Uppaal!GlobalDeclarations createTypeDeclarations() {
+		self.createVariable(new Uppaal!PredefinedType.set(getTimeTStructText()), "time_t");	
+		self.createVariable(new Uppaal!PredefinedType.set(getDoubleTStructText()), "double_t");
+		self.createVariable(new Uppaal!PredefinedType.set(getTimeActivityStructText()), "timeActivity");
+	}
+	
+	operation Uppaal!GlobalDeclarations createConstants(enabledNodes : Collection, uncertainty : Real) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("INFINITE_TIME", self.createConstant(new Uppaal!PredefinedType.set("int").makeInt(), "INFINITE_TIME", "-1"));
+		r.put("N_REACTANTS", self.createConstant(new Uppaal!PredefinedType.set("int").makeInt(), "N_REACTANTS", enabledNodes.size()));
+		r.put("zero", self.createConstant(new Uppaal!PredefinedType.set("double_t"), "zero", "{0, 0}"));
+		r.put("INFINITE_TIME_DOUBLE", self.createConstant(new Uppaal!PredefinedType.set("double_t"), "INFINITE_TIME_DOUBLE", "{-1000, -3}"));
+		if(uncertainty != 0) {
+			var dataVariableDeclaration = new Uppaal!DataVariableDeclaration;
+			r.put("LOWER_UNC", dataVariableDeclaration.createVariable(new Uppaal!PredefinedType.set("double_t"), "LOWER_UNC", formatDouble((100.0 - uncertainty) / 100.0)));
+			r.put("UPPER_UNC", dataVariableDeclaration.createVariable(new Uppaal!PredefinedType.set("double_t"), "UPPER_UNC", formatDouble((100.0 + uncertainty) / 100.0)));
+			self.declaration.add(dataVariableDeclaration.makeConstant());
+		}
+		return r;
+	}
+	
+	operation Uppaal!GlobalDeclarations createVariables(enabledNodes : Collection, globals : ConcurrentMap) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("minCrit", self.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "minCrit", new Uppaal!IdentifierExpression.set(globals.get("N_REACTANTS"))));
+		r.put("criticalSession", self.createVariable(new Uppaal!PredefinedType.set("bool").makeBool(), "criticalSession", "{ " + enabledNodes.collect(node|"0").concat(", ") + " }", new Uppaal!ValueIndex.set(new Uppaal!IdentifierExpression.set(globals.get("N_REACTANTS")))));			
+		var dataVariableDeclaration = new Uppaal!DataVariableDeclaration;
+		r.put("conta_inf", dataVariableDeclaration.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "conta_inf", "0"));
+		r.put("conta_bigN", dataVariableDeclaration.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "conta_bigN", "0"));
+		self.declaration.add(dataVariableDeclaration);
+		return r;
+	}
+
+	operation Uppaal!GlobalDeclarations createFunctionDeclarations() : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("enterCrit", self.createFunction(new Uppaal!PredefinedType.set("void").makeVoid(), "enterCrit", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("int").makeInt(), "id") }, new Uppaal!LiteralExpression.set(getEnterCritFunctionBodyText())));
+		r.put("exitCrit", self.createFunction(new Uppaal!PredefinedType.set("void").makeVoid(), "exitCrit", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("int").makeInt(), "id") }, new Uppaal!LiteralExpression.set(getExitCritFunctionBodyText())));
+		r.put("subtract", self.createFunction(new Uppaal!PredefinedType.set("double_t"), "subtract", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "a"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "b") }, new Uppaal!LiteralExpression.set(getSubtractFunctionBodyText())));
+		r.put("add", self.createFunction(new Uppaal!PredefinedType.set("double_t"), "add", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "a"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "b") }, new Uppaal!LiteralExpression.set(getAddFunctionBodyText())));
+		r.put("multiply", self.createFunction(new Uppaal!PredefinedType.set("double_t"), "multiply", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "a"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "b") }, new Uppaal!LiteralExpression.set(getMultiplyFunctionBodyText())));
+		r.put("inverse", self.createFunction(new Uppaal!PredefinedType.set("double_t"), "inverse", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "a") }, new Uppaal!LiteralExpression.set(getInverseFunctionBodyText())));
+		r.put("power", self.createFunction(new Uppaal!PredefinedType.set("time_t"), "power", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("int").makeInt(), "a"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("int").makeInt(), "b") }, new Uppaal!LiteralExpression.set(getPowerFunctionBodyText())));
+		r.put("round", self.createFunction(new Uppaal!PredefinedType.set("time_t"), "round", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "a") }, new Uppaal!LiteralExpression.set(getRoundFunctionBodyText())));
+		r.put("scenario1", self.createFunction(new Uppaal!PredefinedType.set("double_t"), "scenario1", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "k"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "r1"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "r1Levels"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("bool").makeBool(), "r1Active") }, new Uppaal!LiteralExpression.set(getScenario1FunctionBodyText())));
+		r.put("scenario2_3", self.createFunction(new Uppaal!PredefinedType.set("double_t"), "scenario2_3", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "k"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "r2"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "r2Levels"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("bool").makeBool(), "r2Active"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "r1"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "r1Levels"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("bool").makeBool(), "r1Active") }, new Uppaal!LiteralExpression.set(getScenario2_3FunctionBodyText())));
+		r.put("int_to_double", self.createFunction(new Uppaal!PredefinedType.set("double_t"), "int_to_double", Sequence{ new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("int").makeInt(), "a") }, new Uppaal!LiteralExpression.set(getIntTodoubleFunctionBodyText())));
+		return r;
+	}
+	
+	operation Uppaal!GlobalDeclarations createReactantConstants(enabledNodes : Collection) : ConcurrentMap {
+		return enabledNodes.aggregate(node|node.getId() + "Levels", self.createConstant(new Uppaal!PredefinedType.set("int").makeInt(), node.getId() + "Levels", node.levels));
+	}
+	
+	operation Uppaal!GlobalDeclarations createReactantVariables(enabledNodes : Collection) : ConcurrentMap {
+		return enabledNodes.aggregate(node|node.getId(), self.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), node.getId(), node.initialConcentration));
+	}
+	
+	operation Uppaal!GlobalDeclarations createReactionConstants(enabledEdges : Collection, timeScaleFactor: Real) : ConcurrentMap {
+		return enabledEdges.aggregate(edge|"k_" + edge.getId(), self.createConstant(new Uppaal!PredefinedType.set("double_t"), "k_" + edge.getId(), formatDouble(edge.k / (timeScaleFactor * edge.levelsScaleFactor))));
+	}
+	
+	operation Uppaal!GlobalDeclarations createReactionVariables(enabledEdges : Collection) : ConcurrentMap {
+		return enabledEdges.aggregate(edge|edge.getId(), self.createVariable(new Uppaal!PredefinedType.set("timeActivity"), edge.getId()));
+	}
+	
+	operation Uppaal!NSTA createRandomInitialisationTemplate(randomInitialConcentrationNodes : Collection, globals : ConcurrentMap) : Uppaal!Template {
+		var r = null;
+		r = new Uppaal!Template;
+		r.name = "Init_Random";
+		var id2 = r.createLocation("id2", 501, 0);
+		var id3 = r.createLocation("id3", 323, 0).makeCommitted();
+		var id4 = r.createLocation("id4", 0, 0).makeCommitted();
+		r.init = id4;
+		var id5 = r.createChanceNode("id5", 161, 0);
+		r.createEdge(id3, id2).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("do_update")), true);
+		r.createChanceEdge(id5, id3, 1).addSelectionsAndUpdatesToRandomInitialisations(randomInitialConcentrationNodes, globals);
+		r.createEdge(id4, id5);
+		self.template.add(r);
+		return r;
+	}
+
+	operation Uppaal!Edge addSelectionsAndUpdatesToRandomInitialisations(randomInitialConcentrationNodes : Collection, globals : ConcurrentMap) : Uppaal!Edge {	
+		for(node in randomInitialConcentrationNodes) {
+			var variable = globals.get(node.getId());
+			var initVariable = self.createSelection(new Uppaal!PredefinedType.set("int[0," + (node.randomInitialConcentrationMaximum - node.randomInitialConcentrationMinimum) / node.randomInitialConcentrationStep + "]"), node.getId() + "_init");
+			var f = node.randomInitialConcentrationStep;
+			var e = initVariable;
+			var d = new Uppaal!ArithmeticExpression.set(e, Uppaal!ArithmeticOperator#MULTIPLICATE, f);
+			var c = node.randomInitialConcentrationMinimum;
+			var b = new Uppaal!ArithmeticExpression.set(c, Uppaal!ArithmeticOperator#ADD, d);
+			var a = variable;
+			var update = new Uppaal!AssignmentExpression.set(a, b);
+			self.addUpdate(update);
+		}		
+		return self;
+	}
+	
+	operation Uppaal!NSTA createReactantTemplates(uncertainty : Real, havingInfluencingReactionsNodes : Collection, enabledEdges : Collection, randomInitsPresent : Boolean, globals : ConcurrentMap) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		var firstTemplate = true;
+		for(node in havingInfluencingReactionsNodes) {
+			r.put(node.getId(), self.createReactantTemplate(uncertainty, node, node.getInfluencingReactions(enabledEdges), firstTemplate, randomInitsPresent, globals));
+			firstTemplate = false;
+		}
+		return r;
+	}
+	
+	operation Uppaal!NSTA createReactantTemplate(uncertainty : Real, node : Animo!Node, influencingReactions : Collection, firstTemplate : Boolean, randomInitsPresent : Boolean, globals : ConcurrentMap) : Uppaal!Template {
+		var i = node.index;
+		var r = new Uppaal!Template.set("Reactant_" + node.getId()).setReactantTemplateParameters().set(new Uppaal!LocalDeclarations);
+		var locals = new ConcurrentMap;
+		locals.putAll(r.declarations.createClocks());		
+		locals.putAll(r.declarations.createVariables(globals));
+		locals.putAll(r.declarations.createFunctionDeclarations(uncertainty, node, influencingReactions, globals));	
+		var id0 = r.createLocation("id0_responding", -1560, -810).makeCommitted();
+		var id3 = r.createLocation("id3_responding", -1853, -646).makeUrgent();
+		var id5 = r.createLocation("id5_start", 1241, -731);
+		if(not randomInitsPresent and firstTemplate) { id5.makeCommitted(); }
+		r.init = id5;	
+		var id6 = r.createLocation("id6_not_reacting", -1419, -841);
+		var id7 = r.createLocation("id7_updating", -1419, -731).makeCommitted();
+		var id8 = r.createLocation("id8_waiting", -1666, -731).setInvariant(new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#LESS_OR_EQUAL, locals.get("tU")));		
+		r.createEdge(id3, id7).addUpdate(createFunctionCall("update")).addUpdate(locals.get("decide_reset").createFunctionCall()).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("do_update")), true);
+		r.createEdge(id3, id7).addUpdate(createFunctionCall("update")).addUpdate(locals.get("decide_reset").createFunctionCall()).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("do_update")), false);		
+		r.createEdge_id5_id7(id5, id7, globals, firstTemplate, randomInitsPresent);
+		r.createEdge(id7, id6).setGuard(createFunctionCall("cant_react")).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("decide_react")), true);
+		r.createEdge(id7, id6).setGuard(createFunctionCall("cant_react")).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("decide_react")), false);
+		r.createEdges_id7_id8(id7, id8, globals, locals);
+		r.createEdges_id8_id0(id8, id0, globals, locals, i);
+		var id0_id7_guard = new Uppaal!CompareExpression.set(globals.get("minCrit"), Uppaal!CompareOperator#EQUAL, i);
+		r.createEdge(id0, id7).setGuard(id0_id7_guard).addUpdate(createFunctionCall("update")).addUpdate(globals.get("exitCrit").createFunctionCall().add(i)).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("reacted")).add(i), true);
+		r.createEdges_id6_id3(node, influencingReactions, id6, id3, globals, locals);
+		r.createEdges_id8_id3(node, influencingReactions, id8, id3, globals, locals);
+		self.template.add(r);
+		return r;
+	}
+	
+	operation Uppaal!Template createEdge_id5_id7(id5 :  Uppaal!Location, id7 :  Uppaal!Location, globals : ConcurrentMap, firstTemplate : Boolean, randomInitsPresent : Boolean) {
+		var id5_id7 = self.createEdge(id5, id7).addUpdate(createFunctionCall("update"));
+		if(randomInitsPresent or not firstTemplate) { id5_id7.createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("do_update")), false) ;}
+		else{ id5_id7.createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("do_update")), true) ;}
+	}
+	
+	operation Uppaal!Template createEdges_id7_id8(id7 :  Uppaal!Location, id8 :  Uppaal!Location, globals : ConcurrentMap,  locals : ConcurrentMap) {
+		self.createEdge1_id7_id8(id7, id8, globals, locals, true);
+		self.createEdge1_id7_id8(id7, id8, globals, locals, false);
+		self.createEdge2_id7_id8(id7, id8, globals, locals, true);
+		self.createEdge2_id7_id8(id7, id8, globals, locals, false);
+	}
+	
+	operation Uppaal!Template createEdge1_id7_id8(id7 :  Uppaal!Location, id8 :  Uppaal!Location, globals : ConcurrentMap,  locals : ConcurrentMap, isSend : Boolean) {
+		var equation2 = new Uppaal!LogicalExpression.set(locals.get("can_react").createFunctionCall(), Uppaal!LogicalOperator#AND, new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#LESS_OR_EQUAL, locals.get("tU")));
+		self.createEdge(id7, id8).setGuard(equation2).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("decide_react")), isSend);
+	}
+	
+	operation Uppaal!Template createEdge2_id7_id8(id7 :  Uppaal!Location, id8 :  Uppaal!Location, globals : ConcurrentMap,  locals : ConcurrentMap, isSend : Boolean) {
+		var equation3 = new Uppaal!LogicalExpression.set(locals.get("can_react").createFunctionCall(), Uppaal!LogicalOperator#AND, new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#GREATER, locals.get("tU")));
+		self.createEdge(id7, id8).setGuard(equation3).addUpdate(locals.get("make_urgent").createFunctionCall()).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("decide_react")), isSend);
+	}
+	
+	operation Uppaal!Template createEdges_id8_id0(id8 :  Uppaal!Location, id0 :  Uppaal!Location, globals : ConcurrentMap,  locals : ConcurrentMap, i : Integer) {
+		self.createEdge_id8_id0(id8, id0, globals, locals, i, true);
+		self.createEdge_id8_id0(id8, id0, globals, locals, i, false);
+	}
+	
+	operation Uppaal!Template createEdge_id8_id0(id8 :  Uppaal!Location, id0 :  Uppaal!Location, globals : ConcurrentMap,  locals : ConcurrentMap, i : Integer, isSend : Boolean) {
+		var equation4 = new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#GREATER_OR_EQUAL, locals.get("tL"));
+		self.createEdge(id8, id0).setGuard(equation4).addUpdate(locals.get("react").createFunctionCall()).addUpdate(new Uppaal!AssignmentExpression.set(locals.get("c"), "0")).addUpdate(globals.get("enterCrit").createFunctionCall().add(i)).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("reacting")), isSend);
+	}
+	
+	operation Uppaal!Template createEdges_id6_id3(node : Animo!Node, influencingReactions : Collection, id6 :  Uppaal!Location, id3 :  Uppaal!Location, globals : ConcurrentMap,  locals : ConcurrentMap) {
+		var alreadyOutputReactants = Sequence {};
+		for(edge in influencingReactions) {
+			if (edge.scenario == 0) {
+				alreadyOutputReactants = self.createEdge_id6_id3(edge.source, node, alreadyOutputReactants, id6, id3, globals, locals);
+			}
+			if (edge.scenario == 1 or edge.scenario == 2) {
+				alreadyOutputReactants = self.createEdge_id6_id3(edge.source, node, alreadyOutputReactants, id6, id3, globals, locals);
+				alreadyOutputReactants = self.createEdge_id6_id3(edge.target, node, alreadyOutputReactants, id6, id3, globals, locals);
+			}
+		}
+	}
+	
+	operation Uppaal!Template createEdge_id6_id3(node1 : Animo!Node, node2 : Animo!Node, alreadyOutputReactants : Collection, id6 :  Uppaal!Location, id3 :  Uppaal!Location, globals : ConcurrentMap, locals : ConcurrentMap) : Collection {
+		if (not alreadyOutputReactants.includes(node1) and not (node1 == node2)) {
+			alreadyOutputReactants.add(node1);
+			self.createEdge_id6_id3(node1, id6, id3, globals, locals);
+		}
+		return alreadyOutputReactants;
+	}
+	
+	operation Uppaal!Template createEdge_id6_id3(node : Animo!Node, id6 :  Uppaal!Location, id3 :  Uppaal!Location, globals : ConcurrentMap, locals : ConcurrentMap) {
+		self.createEdge(id6, id3).addUpdate(new Uppaal!AssignmentExpression.set(locals.get("c"), "0")).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("reacted")).add(node.index), false);
+	}
+	
+	operation Uppaal!Template createEdges_id8_id3(node : Animo!Node, influencingReactions : Collection, id8 :  Uppaal!Location, id3 :  Uppaal!Location, globals : ConcurrentMap, locals : ConcurrentMap) {
+		var alreadyOutputReactants = Sequence {};
+		for(edge in influencingReactions) {
+			if (edge.scenario == 0) {
+				alreadyOutputReactants = self.createEdge_id8_id3(edge.source, node, alreadyOutputReactants, id8, id3, globals, locals);
+			}
+			if (edge.scenario == 1 or edge.scenario == 2) {
+				alreadyOutputReactants = self.createEdge_id8_id3(edge.source, node, alreadyOutputReactants, id8, id3, globals, locals);
+				alreadyOutputReactants = self.createEdge_id8_id3(edge.target, node, alreadyOutputReactants, id8, id3, globals, locals);
+			}
+		}
+	}
+	
+	operation Uppaal!Template createEdge_id8_id3(node1 : Animo!Node, node2 : Animo!Node, alreadyOutputReactants : Collection, id8 :  Uppaal!Location, id3 :  Uppaal!Location, globals : ConcurrentMap, locals : ConcurrentMap) : Collection {
+		if (not alreadyOutputReactants.includes(node1) and not (node1 == node2)) {
+			alreadyOutputReactants.add(node1);
+			self.createEdge_id8_id3(node1, id8, id3, globals, locals);
+		}
+		return alreadyOutputReactants;
+	}
+	
+	operation Uppaal!Template createEdge_id8_id3(node : Animo!Node, id8 :  Uppaal!Location, id3 :  Uppaal!Location, globals : ConcurrentMap, locals : ConcurrentMap) {
+		var a = new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#GREATER, "0");
+		var b = new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#LESS, locals.get("tL"));
+		var equation5 = new Uppaal!LogicalExpression.set(a, Uppaal!LogicalOperator#AND, b);
+		self.createEdge(id8, id3).setGuard(equation5).createSynchronization(new Uppaal!IdentifierExpression.set(globals.get("reacted")).add(node.index), false);
+	}
+	
+	operation Uppaal!Template setReactantTemplateParameters() : Uppaal!Template {
+		var variableDeclarationR = new Uppaal!DataVariableDeclaration;
+		var variableR = variableDeclarationR.createVariable(new Uppaal!PredefinedType.set("int&amp;").makeInt(), "R");
+		var variableDeclarationMax = new Uppaal!DataVariableDeclaration;
+		var variableMax = variableDeclarationMax.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "MAX");
+		self.add(new Uppaal!Parameter.set(variableDeclarationR));
+		self.add(new Uppaal!Parameter.set(variableDeclarationMax.makeConstant()));
+		return self;
+	}
+	
+	operation Uppaal!LocalDeclarations createClocks() : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("c", self.createClock(new Uppaal!PredefinedType.set("clock").makeClock(), "c"));
+		return r;
+	}
+	
+	operation Uppaal!LocalDeclarations createVariables(globals : ConcurrentMap) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("delta", self.createVariable(new Uppaal!PredefinedType.set("int[-1,1]").makeInt(), "delta", "0"));
+		r.put("tL", self.createVariable(new Uppaal!PredefinedType.set("time_t"), "tL"));
+		r.put("tU", self.createVariable(new Uppaal!PredefinedType.set("time_t"), "tU"));
+		r.put("totalRate", self.createVariable(new Uppaal!PredefinedType.set("double_t"), "totalRate", new Uppaal!IdentifierExpression.set(globals.get("INFINITE_TIME_DOUBLE"))));
+		r.put("oldRate", self.createVariable(new Uppaal!PredefinedType.set("double_t"), "oldRate", new Uppaal!IdentifierExpression.set(globals.get("INFINITE_TIME_DOUBLE")) ));
+		return r;
+	}
+	
+	operation Uppaal!LocalDeclarations createFunctionDeclarations(uncertainty : Real, node : Animo!Node, influencingReactions : Collection, globals: ConcurrentMap) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("compute_rate", self.createFunction(new Uppaal!PredefinedType.set("double_t"), "compute_rate", Sequence { }, getCompute_rateFunctionBody(uncertainty, node, influencingReactions, globals)));
+		r.put("update", self.createFunction(new Uppaal!PredefinedType.set("void").makeVoid(), "update", Sequence { }, new Uppaal!LiteralExpression.set(uncertainty == 0 ? getUpdateFunctionBodyTextUncertaintyNotPresent() : getUpdateFunctionBodyTextUncertaintyPresent() )));
+		r.put("react", self.createFunction(new Uppaal!PredefinedType.set("void").makeVoid(), "react", Sequence { }, new Uppaal!LiteralExpression.set(getReactFunctionBodyText())));
+		r.put("make_urgent", self.createFunction(new Uppaal!PredefinedType.set("void").makeVoid(), "make_urgent", Sequence { }, new Uppaal!LiteralExpression.set(getMakeUrgentFunctionBodyText())));
+		r.put("rate_significantly_changed", self.createFunction(new Uppaal!PredefinedType.set("bool").makeBool(), "rate_significantly_changed", Sequence {  new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "oldRate"), new Uppaal!Parameter.setVariable(new Uppaal!PredefinedType.set("double_t"), "newRate") }, new Uppaal!LiteralExpression.set(getRateSignificantlyChangedFunctionBodyText())));
+		r.put("decide_reset", self.createFunction(new Uppaal!PredefinedType.set("void").makeVoid(), "decide_reset", Sequence { }, new Uppaal!LiteralExpression.set(getDecideResetFunctionBodyText())));
+		r.put("can_react", self.createFunction(new Uppaal!PredefinedType.set("bool").makeBool(), "can_react", Sequence { }, new Uppaal!LiteralExpression.set(getCanReactFunctionBodyText())));
+		r.put("cant_react", self.createFunction(new Uppaal!PredefinedType.set("bool").makeBool(), "cant_react", Sequence { }, new Uppaal!LiteralExpression.set(getCantReactFunctionBodyText())));
+		return r;
+	}
+	
+	operation getCompute_rateFunctionBody(uncertainty : Real, node : Animo!Node, influencingReactions : Collection, globals: ConcurrentMap) : Uppaal!Block {
+		var r = new Uppaal!Block;
+		r.declarations = new Uppaal!LocalDeclarations;
+		var locals = new ConcurrentMap;
+		
+		for(edge in influencingReactions) {
+			if (edge.scenario == 0) {
+				locals.put(edge.getId() + "_r", r.declarations.createCompute_rateScenario1Declaration(edge.getId() + "_r", edge, globals, edge.getActiveR1()));
+
+			}
+			if (edge.scenario == 1 or edge.scenario == 2) {
+				locals.put(edge.getId() + "_r", r.declarations.createCompute_rateScenario2_3Declaration(edge.getId() + "_r", edge, globals, edge.getActiveR1(), edge.getActiveR2()));
+			}
+		}
+		
+		for(edge in influencingReactions) {
+			if (edge.scenario == 1 or edge.scenario == 2) {
+			   	var r2 = edge.getReactant();
+			   	var r1 = edge.getCatalyst();
+			   	var rOutput = edge.target;
+				var rNotOutput;
+				var activityNotOutput = false;
+				if (rOutput == r1) {
+					rNotOutput = r2;
+					activityNotOutput = edge.getActiveR2();
+				} 
+				else {
+					rNotOutput = r1;
+					activityNotOutput = edge.getActiveR1();
+				}
+				if (rOutput == r1 or rOutput == r2) {
+					r.createCompute_rateScenario2_3ConditionalAssignment(edge, rNotOutput, r1, r2, rOutput, globals, locals, activityNotOutput, edge.getActiveR1(), edge.getActiveR2());
+				}
+			}
+		}
+		
+		for (influencingReaction in influencingReactions) {
+			r.createCompute_rateAssignment(uncertainty, influencingReaction, globals);
+		}
+		
+		r.createCompute_rateReturn(influencingReactions, globals, locals);
+		
+		return r;
+	}
+
+	operation Uppaal!LocalDeclarations createCompute_rateScenario1Declaration(variableName: String, edge : Animo!Edge, globals: ConcurrentMap, activeR1 : Boolean) : Uppaal!Variable {
+		var argument1a = new Uppaal!IdentifierExpression.set(globals.get("k_" + edge.getId()));	
+		var argument2a = globals.get("int_to_double").createFunctionCall().add(globals.get(edge.getCatalyst().getId()));
+		var argument3a = globals.get("int_to_double").createFunctionCall().add(globals.get(edge.getCatalyst().getId() + "Levels"));
+		var argument4a = new Uppaal!LiteralExpression.set(activeR1);
+		return self.createVariable(new Uppaal!PredefinedType.set("double_t"), variableName, globals.get("scenario1").createFunctionCall().add(argument1a).add(argument2a).add(argument3a).add(argument4a));
+	}
+	
+	operation Uppaal!LocalDeclarations createCompute_rateScenario2_3Declaration(variableName: String, edge : Animo!Edge, globals: ConcurrentMap, activeR1 : Boolean, activeR2 : Boolean) : Uppaal!Variable {
+		var argument1b = new Uppaal!IdentifierExpression.set(globals.get("k_" + edge.getId()));	
+		var argument2b = globals.get("int_to_double").createFunctionCall().add(globals.get(edge.getReactant().getId()));
+		var argument3b = globals.get("int_to_double").createFunctionCall().add(globals.get(edge.getReactant().getId() + "Levels"));
+		var argument4b = new Uppaal!LiteralExpression.set(activeR2);
+		var argument2a = globals.get("int_to_double").createFunctionCall().add(globals.get(edge.getCatalyst().getId()));
+		var argument3a = globals.get("int_to_double").createFunctionCall().add(globals.get(edge.getCatalyst().getId() + "Levels"));
+		var argument4a = new Uppaal!LiteralExpression.set(activeR1);
+		return self.createVariable(new Uppaal!PredefinedType.set("double_t"), variableName, globals.get("scenario2_3").createFunctionCall().add(argument1b).add(argument2b).add(argument3b).add(argument4b).add(argument2a).add(argument3a).add(argument4a));
+	}
+	
+	operation Uppaal!Block createCompute_rateScenario2_3ConditionalAssignment(edge : Animo!Edge, rNotOutput : Animo!Node, r1 : Animo!Node, r2 : Animo!Node, rOutput : Animo!Node, globals : ConcurrentMap, locals : ConcurrentMap, activityNotOutput : Boolean, activeR1 : Boolean, activeR2 : Boolean) {
+		var ifStatement = new Uppaal!IfStatement;
+		ifStatement.ifExpression = createCompute_rateScenario2_3ConditionalAssignmentIf(edge, rNotOutput, globals, activityNotOutput);
+		ifStatement.thenStatement = new Uppaal!ExpressionStatement.set(createCompute_rateScenario2_3ConditionalAssignmentThen(edge, rNotOutput, r1, r2, rOutput, globals, locals, activityNotOutput, activeR1, activeR2));
+		self.statement.add(ifStatement);
+	}
+	
+	operation createCompute_rateScenario2_3ConditionalAssignmentIf(edge : Animo!Edge, rNotOutput : Animo!Node, globals : ConcurrentMap, activityNotOutput : Boolean) : Uppaal!LogicalExpression {
+		var d = new Uppaal!CompareExpression.set(globals.get(rNotOutput.getId()), Uppaal!CompareOperator#LESS, globals.get(rNotOutput.getId() + "Levels"));
+		var c = new Uppaal!CompareExpression.set(globals.get(rNotOutput.getId()), Uppaal!CompareOperator#GREATER, "0");
+		var b = activityNotOutput ? c : d;	
+		var a = new Uppaal!CompareExpression.set(edge.getId() + "_r.b", Uppaal!CompareOperator#EQUAL, "0");
+		return new Uppaal!LogicalExpression.set(a, Uppaal!LogicalOperator#AND, b);
+	}
+	
+	operation createCompute_rateScenario2_3ConditionalAssignmentThen(edge : Animo!Edge, rNotOutput : Animo!Node, r1 : Animo!Node, r2 : Animo!Node, rOutput : Animo!Node, globals : ConcurrentMap, locals : ConcurrentMap, activityNotOutput : Boolean, activeR1 : Boolean, activeR2 : Boolean) : Uppaal!AssignmentExpression {
+		var variable = new Uppaal!IdentifierExpression.set(locals.get(edge.getId() + "_r"));
+		var argument1 = new Uppaal!IdentifierExpression.set(globals.get("k_" + edge.getId()));	
+		var a = new Uppaal!LiteralExpression.set("1"); 
+		var b = new Uppaal!ArithmeticExpression.set(globals.get(r2.getId() + "Levels"), Uppaal!ArithmeticOperator#SUBTRACT, "1");
+		var c = new Uppaal!IdentifierExpression.set(globals.get(r2.getId())); 		
+		var argument2 = globals.get("int_to_double").createFunctionCall().add(((r2 == rOutput) and activeR2) ? a : (((r2 == rOutput) and not activeR2) ? b : c));	
+		var argument3 = globals.get("int_to_double").createFunctionCall().add(new Uppaal!IdentifierExpression.set(globals.get(r2.getId() + "Levels")));
+		var argument4 = new Uppaal!LiteralExpression.set(activeR2); 		
+		var e = new Uppaal!LiteralExpression.set("1"); 
+		var f = new Uppaal!ArithmeticExpression.set(globals.get(r1.getId() + "Levels"), Uppaal!ArithmeticOperator#SUBTRACT, "1");
+		var g = new Uppaal!IdentifierExpression.set(globals.get(r1.getId())); 
+		var argument5 = globals.get("int_to_double").createFunctionCall().add(((r1 == rOutput) and activeR1) ? e : (((r1 == rOutput) and not activeR1) ? f : g));		
+		var argument6 = globals.get("int_to_double").createFunctionCall().add(new Uppaal!IdentifierExpression.set(globals.get(r1.getId() + "Levels")));
+		var argument7 = new Uppaal!LiteralExpression.set(activeR1); 		
+		var value = globals.get("scenario2_3").createFunctionCall().add(argument1).add(argument2).add(argument3).add(argument4).add(argument5).add(argument6).add(argument7);
+		return new Uppaal!AssignmentExpression.set(variable, value);
+	}
+	
+	operation Uppaal!Block createCompute_rateAssignment(uncertainty : Real, influencingReaction : Animo!Edge, globals : ConcurrentMap) {
+		var variable = new Uppaal!LiteralExpression.set(influencingReaction.getId() + ".T");
+			if (uncertainty != 0) {
+				var c =	globals.get("LOWER_UNC");		 
+				var b = globals.get("inverse").createFunctionCall().add(influencingReaction.getId() + "_r");
+				var a = globals.get("multiply").createFunctionCall().add(b).add(c);
+				var value = globals.get("round").createFunctionCall().add(a);
+				self.statement.add(new Uppaal!ExpressionStatement.set(new Uppaal!AssignmentExpression.set(variable, value)));
+			} else {
+				var a = globals.get("inverse").createFunctionCall().add(influencingReaction.getId() + "_r");
+				var value = globals.get("round").createFunctionCall().add(a);
+				self.statement.add(new Uppaal!ExpressionStatement.set(new Uppaal!AssignmentExpression.set(variable, value)));
+			}
+	}
+	
+	operation Uppaal!Block createCompute_rateReturn(influencingReactions : Collection, globals : ConcurrentMap, locals : ConcurrentMap) {
+		if (influencingReactions.size() == 1) {
+			self.statement.add(new Uppaal!ReturnStatement.set(createCompute_rateReturnSingleInfluencingReaction(influencingReactions.at(0), globals, locals)));
+		}
+		else {
+			self.statement.add(new Uppaal!ReturnStatement.set(createCompute_rateReturnMultipleInfluencingReactions(influencingReactions, globals, locals)));
+		}
+	}
+	
+	operation createCompute_rateReturnSingleInfluencingReaction(influencingReaction : Animo!Edge, globals : ConcurrentMap, locals : ConcurrentMap) : Uppaal!Expression {
+		var a = new Uppaal!IdentifierExpression.set(locals.get(influencingReaction.getId() + "_r"));
+		var b = globals.get("subtract").createFunctionCall().add(new Uppaal!LiteralExpression.set("zero")).add(a);
+		return influencingReaction.increment > 0 ? a : b;
+	}
+	
+	operation createCompute_rateReturnMultipleInfluencingReactions(influencingReactions : Collection, globals : ConcurrentMap, locals : ConcurrentMap) : Uppaal!Expression {		
+		var r;
+		if(influencingReactions.size() > 0) {
+			var influencingReaction = influencingReactions.at(0);
+			var functionCall = (influencingReaction.increment > 0 ? globals.get("add") : globals.get("subtract")).createFunctionCall();
+			r = functionCall.add(createCompute_rateReturnMultipleInfluencingReactions(influencingReactions.excluding(influencingReaction), globals, locals)).add(locals.get(influencingReaction.getId() + "_r"));
+		}
+		else {
+			r = new Uppaal!LiteralExpression.set("zero");
+		}
+		return r;
+	}
+	
+	operation Uppaal!SystemDeclarations createTemplateDeclarations(havingInfluencingReactionsNodes : Collection, reactantTemplates : ConcurrentMap, variables: ConcurrentMap) : Uppaal!SystemDeclarations {
+		var x = havingInfluencingReactionsNodes.collect(node|self.createTemplateDeclaration(node, reactantTemplates.get(node.getId()), variables.get(node.getId()), node.levels));
+		return self.addTemplateDeclarations(x);
+	}
+	
+	operation Uppaal!SystemDeclarations createTemplateDeclarations(havingInfluencingReactionsNodes : Collection, reactantTemplates : ConcurrentMap, randomInitialisationTemplate : Uppaal!Template, variables: ConcurrentMap) : Uppaal!SystemDeclarations {
+		var x = havingInfluencingReactionsNodes.collect(node|self.createTemplateDeclaration(node, reactantTemplates.get(node.getId()), variables.get(node.getId()), node.levels));
+		var y = randomInitialisationTemplate.createRedefinedTemplate(randomInitialisationTemplate.name).asSequence();
+		return self.addTemplateDeclarations(y.includingAll(x));
+	}
+
+	operation Uppaal!SystemDeclarations createTemplateDeclaration(node : Animo!Node, template : Uppaal!Template, argument1 : Uppaal!Variable, argument2 : Integer) : Uppaal!RedefinedTemplate {
+		var r = template.createRedefinedTemplate(node.getId() + "_");
+		var templateDeclaration = new Uppaal!TemplateDeclaration.set(r).add(argument1).add(argument2);
+		self.declaration.add(templateDeclaration);
+		return r;
+	}
+	
+	operation formatDouble(d : Real) : String {
+		var e = Math.round(Math.log10(d.asDouble())) - 3;
+		var b = Math.round(d.asDouble() * Math.pow(10, -e));
+		//We always want 4 figures
+		if (b < 10) {
+			b = b * 1000;
+			e = e - 3;
+		} 
+		else if (b < 100) {
+			b = b * 100;
+			e = e - 2;
+		} 
+		else if (b < 1000) {
+			b = b * 10;
+			e = e - 1;
+		}
+		return "{" + b + ", " + e + "}";
+	}

@@ -1,0 +1,165 @@
+import "StdFunctions.etl";
+
+pre{
+	var Math = Native("java.lang.Math");
+}
+
+rule Network2NSTA
+	transform s : Animo!Network
+	to t : Uppaal!NSTA {
+		var timeScaleFactorODE = 1;
+		var reindexedNodes = s.nodes.reindex();
+		var enabledNodes = reindexedNodes.select(node|node.enabled);
+		var enabledEdges = s.edges.select(edge|edge.enabled);
+		var randomInitialConcentrationNodes = enabledNodes.select(node|node.randomInitialConcentration);
+		t.globalDeclarations = new Uppaal!GlobalDeclarations;
+		t.systemDeclarations = new Uppaal!SystemDeclarations;
+		var globals = new ConcurrentMap;
+		globals.putAll(t.globalDeclarations.createClocks());	
+		globals.putAll(t.globalDeclarations.createReactantClocks(enabledNodes));
+		globals.putAll(t.globalDeclarations.createReactantConstants(enabledNodes));	
+		globals.putAll(t.globalDeclarations.createReactionConstants(enabledEdges, timeScaleFactorODE));
+		var template = t.createTemplate(enabledEdges, enabledNodes, randomInitialConcentrationNodes, globals);		
+		t.systemDeclarations.createTemplateDeclaration("model", template);		
+	}
+	
+	operation Uppaal!GlobalDeclarations createClocks() : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("globalTime", self.createClock(new Uppaal!PredefinedType.set("clock").makeClock(), "globalTime"));
+		return r;
+	}
+	
+	operation Uppaal!GlobalDeclarations createReactantClocks(enabledNodes : Collection) : ConcurrentMap {
+		return enabledNodes.aggregate(node|node.getId(), self.createClock(new Uppaal!PredefinedType.set("clock").makeClock(), node.getId()));
+	}
+	
+	operation Uppaal!GlobalDeclarations createReactantConstants(enabledNodes : Collection) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		for (node in enabledNodes) {
+			r.put(node.getId() + "Init", self.createConstant(new Uppaal!PredefinedType.set("int").makeInt(), node.getId() + "Init", node.initialConcentration.asString()));
+			r.put(node.getId() + "Levels", self.createConstant(new Uppaal!PredefinedType.set("int").makeInt(), node.getId() + "Levels", node.levels.asString()));
+	 	}
+		return r;
+	}
+	
+	operation Uppaal!GlobalDeclarations createReactionConstants(enabledEdges : Collection, timeScaleFactor : Real) : ConcurrentMap {
+		return enabledEdges.aggregate(edge|"k_" + edge.getId(), self.createConstant(new Uppaal!PredefinedType.set("double"), "k_" + edge.getId(), (edge.k / (timeScaleFactor * edge.levelsScaleFactor)).asString()));
+	}
+	
+	operation Uppaal!NSTA createTemplate(enabledEdges : Collection, enabledNodes: Collection, randomInitialConcentrationNodes : Collection, globals : ConcurrentMap) : Uppaal!Template {
+		var r = new Uppaal!Template.set("ODE_Model").set(new Uppaal!LocalDeclarations);
+		var locals = new ConcurrentMap;		
+		locals.putAll(r.declarations.createRateFunctionDeclarations(enabledEdges, enabledNodes, globals));
+		locals.putAll(r.declarations.createBoundedRateFunctionDeclarations(enabledEdges, enabledNodes, globals, locals));		
+		var id0 = r.createLocation("id0", -314, -102).setInvariant(enabledNodes.createInvariantOperands(globals, locals).createInvariant());
+		var id1 = r.createLocation("id1", -448, -102).makeCommitted();
+		r.init = id1;	
+		var id1_id0 = r.createChanceEdge(id1, id0, 1).addSelectionsAndUpdatesTo_id1_id0(enabledNodes, randomInitialConcentrationNodes, globals);
+		self.template.add(r);
+		return r;
+	}
+	
+	operation Uppaal!LocalDeclarations createRateFunctionDeclarations(enabledEdges : Collection, enabledNodes : Collection, globals : ConcurrentMap) : ConcurrentMap {
+		return enabledNodes.aggregate(node|"rate" + node.getId(), self.createFunction(new Uppaal!PredefinedType.set("double"), "rate" + node.getId(), createRateFunctionBody(enabledEdges, node, globals)));
+	}
+	
+	operation createRateFunctionBody(enabledEdges : Collection, node : Animo!Node, globals : ConcurrentMap) : Uppaal!Block {
+		var r = new Uppaal!Block;
+		r.declarations = new Uppaal!LocalDeclarations;				
+		var edges = node.getInfluencingReactions(enabledEdges);
+		var locals = new ConcurrentMap;			
+		for(edge in edges) {
+			var value;
+			if(edge.scenario == 0) {
+				var b = globals.get(edge.getCatalyst().getId());
+				var a = globals.get("k_" + edge.getId());
+				value = new Uppaal!ArithmeticExpression.set(a, Uppaal!ArithmeticOperator#MULTIPLICATE, b);
+			}
+			else if(edge.scenario == 1 or edge.scenario == 2) {
+				var d = edge.getActiveR1() ? globals.get(edge.getCatalyst().getId()) : new Uppaal!ArithmeticExpression.set(globals.get(edge.getCatalyst().getId() + "Levels"), Uppaal!ArithmeticOperator#SUBTRACT, globals.get(edge.getCatalyst().getId()));
+				var c = edge.getActiveR2() ? globals.get(edge.getReactant().getId()) : new Uppaal!ArithmeticExpression.set(globals.get(edge.getReactant().getId() + "Levels"), Uppaal!ArithmeticOperator#SUBTRACT, globals.get(edge.getReactant().getId()));
+				var b = new Uppaal!ArithmeticExpression.set(c, Uppaal!ArithmeticOperator#MULTIPLICATE, d);
+				var a = globals.get("k_" + edge.getId());
+				value = new Uppaal!ArithmeticExpression.set(a, Uppaal!ArithmeticOperator#MULTIPLICATE, b);
+			}
+			locals.put(edge.getId() + "_r", r.declarations.createVariable(new Uppaal!PredefinedType.set("double"), edge.getId() + "_r", value));	
+		}
+		r.statement.add(new Uppaal!ReturnStatement.set(edges.createRateFunctionReturn(locals)));
+		return r;
+	}
+	
+	operation Collection createRateFunctionReturn(locals : ConcurrentMap) : Uppaal!Expression {
+		var r;
+		if(self.size == 0) {
+			r = new Uppaal!LiteralExpression.set(0);
+		}
+		if(self.size() == 1) { 
+			r = self.at(0).decideSignOfRateFunctionReturnOperand(locals); 
+		}
+		else if(self.size() > 1) {
+			r = new Uppaal!ArithmeticExpression.set(self.at(0).decideSignOfRateFunctionReturnOperand(locals), Uppaal!ArithmeticOperator#ADD, self.excluding(self.at(0)).createRateFunctionReturn(locals));
+		}
+		return r;
+	}
+	
+	operation Animo!Edge decideSignOfRateFunctionReturnOperand(locals : ConcurrentMap) : Uppaal!Expression {
+		return (self.increment) > 0 ? new Uppaal!IdentifierExpression.set(locals.get(self.getId() + "_r")) : new Uppaal!MinusExpression.set(locals.get(self.getId() + "_r"));
+	}
+
+	operation Uppaal!LocalDeclarations createBoundedRateFunctionDeclarations(enabledEdges : Collection, enabledNodes : Collection, globals : ConcurrentMap, locals : ConcurrentMap) : ConcurrentMap {
+		return enabledNodes.aggregate(node|"boundedRate" + node.getId(), self.createFunction(new Uppaal!PredefinedType.set("double"), "boundedRate" + node.getId(), createBoundedRateFunctionBody(enabledEdges, node, globals, locals)));
+	}
+	
+	operation createBoundedRateFunctionBody(enabledEdges : Collection, node : Animo!Node, globals : ConcurrentMap, locals : ConcurrentMap) : Uppaal!Block {
+		var r = new Uppaal!Block;
+		if(node.hasInfluencingReactions(enabledEdges)) {
+			r.declarations = new Uppaal!LocalDeclarations;		
+			var variableR = r.declarations.createVariable(new Uppaal!PredefinedType.set("double"), "r", locals.get("rate" + node.getId()).createFunctionCall());	
+			var f = new Uppaal!ReturnStatement.set(new Uppaal!MinusExpression.set(globals.get(node.getId())));
+			var e = new Uppaal!CompareExpression.set(new Uppaal!ArithmeticExpression.set(globals.get(node.getId()), Uppaal!ArithmeticOperator#ADD, variableR), Uppaal!CompareOperator#LESS, 0); 
+			var d = new Uppaal!IfStatement.set(e, f);
+			var c = new Uppaal!ReturnStatement.set(new Uppaal!ArithmeticExpression.set(globals.get(node.getId() + "Levels"), Uppaal!ArithmeticOperator#SUBTRACT, globals.get(node.getId())));
+			var b = new Uppaal!CompareExpression.set(new Uppaal!ArithmeticExpression.set(globals.get(node.getId()), Uppaal!ArithmeticOperator#ADD, variableR), Uppaal!CompareOperator#GREATER, globals.get(node.getId() + "Levels")); 
+			var a = new Uppaal!IfStatement.set(b, c, d);
+			r.statement.add(a);
+			r.statement.add(new Uppaal!ReturnStatement.set(variableR));
+		}
+		else{
+			r.statement.add(new Uppaal!ReturnStatement.set(0));
+		}		
+		return r;
+	}
+
+	operation Collection createInvariant() : Uppaal!Expression {
+		var r;
+		if(self.size() == 1) { 
+			r = self.at(0); 
+		}
+		else if(self.size() > 1) {
+			r = new Uppaal!LogicalExpression.set(self.at(0), Uppaal!LogicalOperator#AND, self.excluding(self.at(0)).createInvariant());
+		}
+		return r;
+	}
+	
+	operation Collection createInvariantOperands(globals : ConcurrentMap, locals : ConcurrentMap) : Collection {
+		return self.collect(node|new Uppaal!CompareExpression.set(new Uppaal!Variable.set(node.getId() + "'"), Uppaal!CompareOperator#EQUAL, locals.get("boundedRate" + node.getId())));
+	}
+	
+	operation Uppaal!Edge addSelectionsAndUpdatesTo_id1_id0(enabledNodes : Collection, randomInitialConcentrationNodes : Collection, globals : ConcurrentMap) : Uppaal!Edge {
+		var locals = new ConcurrentMap;
+		for(node in randomInitialConcentrationNodes) {
+			locals.put(node.getId() + "_rInit", self.createSelection(new Uppaal!PredefinedType.set("int[0," + (node.randomInitialConcentrationMaximum - node.randomInitialConcentrationMinimum) / node.randomInitialConcentrationStep + "]"), node.getId() + "_rInit"));
+		}
+		for(node in enabledNodes) {
+			var h = node.randomInitialConcentrationStep;
+			var g = locals.get(node.getId() + "_rInit");			
+			var f = new Uppaal!ArithmeticExpression.set(g, Uppaal!ArithmeticOperator#MULTIPLICATE, h);
+			var e = node.randomInitialConcentrationMinimum;
+			var d =  globals.get(node.getId() + "Init");
+			var c = new Uppaal!ArithmeticExpression.set(e, Uppaal!ArithmeticOperator#ADD, f);
+			var b = node.randomInitialConcentration ? c : d;
+			var a = globals.get(node.getId());
+			var update = new Uppaal!AssignmentExpression.set(a, b);
+			self.addUpdate(update);
+		}
+	}

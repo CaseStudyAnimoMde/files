@@ -1,0 +1,476 @@
+import "StdFunctions.etl";
+
+pre{
+	var Math = Native("java.lang.Math");
+}
+
+rule Network2NSTA
+	transform s : Animo!Network
+	to t : Uppaal!NSTA {
+		var reindexedNodes = s.nodes.reindex();
+		var enabledNodes = reindexedNodes.select(node|node.enabled);
+		var enabledEdges = s.edges.select(edge|edge.enabled);
+		t.globalDeclarations = new Uppaal!GlobalDeclarations;
+		t.systemDeclarations = new Uppaal!SystemDeclarations;
+		var globals = new ConcurrentMap;
+		globals.putAll(t.globalDeclarations.createClocks());
+		globals.putAll(t.globalDeclarations.createGlobalConstants(enabledNodes));
+		globals.putAll(t.globalDeclarations.createChannels(globals));
+		globals.putAll(t.globalDeclarations.createReactantVariables(enabledNodes));
+		globals.putAll(t.systemDeclarations.createReactionConstants(enabledEdges, s.uncertainty, s.timeScaleFactor));
+		var reactionTemplates = t.createReactionTemplates(enabledEdges, globals);
+		t.systemDeclarations.createTemplateDeclarations(enabledEdges, reactionTemplates, globals);				
+	}
+	
+	operation Uppaal!GlobalDeclarations createClocks() : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("globalTime", self.createClock(new Uppaal!PredefinedType.set("clock").makeClock(), "globalTime"));
+		return r;
+	}
+	
+	operation Uppaal!GlobalDeclarations createGlobalConstants(enabledNodes : Collection) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("INFINITE_TIME", self.createConstant(new Uppaal!PredefinedType.set("int").makeInt(), "INFINITE_TIME", "-1"));
+		r.put("N_REACTANTS", self.createConstant(new Uppaal!PredefinedType.set("int").makeInt(), "N_REACTANTS", enabledNodes.size()));
+		return r;
+	}
+	
+	operation Uppaal!GlobalDeclarations createChannels(globals : ConcurrentMap) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("reacting", self.createChannelVariable("reacting", new Uppaal!IdentifierExpression.set(globals.get("N_REACTANTS")), true));
+		return r;
+	}
+	
+	operation Uppaal!GlobalDeclarations createReactantVariables(enabledNodes : Collection) : ConcurrentMap {
+		return enabledNodes.aggregate(node|node.getId(), self.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), node.getId(), node.initialConcentration));
+	}
+	
+	operation Uppaal!SystemDeclarations createReactionConstants(enabledEdges : Collection, uncertainty : Real, timeScaleFactor : Real) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		for (edge in enabledEdges) {
+			var lowerTimes = edge.computeTimes(false, uncertainty, timeScaleFactor);
+			var upperTimes = (uncertainty == 0) ? lowerTimes : edge.computeTimes(true, uncertainty, timeScaleFactor);
+			r.put(edge.getId() + "_tLower", self.createReactionConstant(edge, edge.getId() + "_tLower", lowerTimes));
+			r.put(edge.getId() + "_tUpper", self.createReactionConstant(edge, edge.getId() + "_tUpper", upperTimes));
+	 	}
+		return r;
+	}
+	
+	operation Uppaal!SystemDeclarations createReactionConstant(edge : Animo!Edge, variableName : String, timeTable: Collection) : Uppaal!Variable {		
+		var value = Sequence{};
+		var indices;
+		var columnsNumber = edge.getCatalyst().levels + 1;
+		var rowsNumber = edge.getReactant().levels + 1;
+		var endColumnIndex = edge.getCatalyst().levels;
+		var endRowIndex = edge.getReactant().levels;
+		if(edge.scenario == 0) {
+			if(edge.increment >= 0) {
+				value = timeTable.takeRow(columnsNumber, 0);
+			}
+			else {
+				value = timeTable.takeRow(columnsNumber, 1);
+			}
+			indices = Sequence{ new Uppaal!ValueIndex.set(endColumnIndex + "+1") };
+		}
+		else {	
+			value = timeTable.takeRows(columnsNumber, 0, endRowIndex).collect(row|"{" + row.concat(", ") + "}");
+			indices = Sequence{ new Uppaal!ValueIndex.set(endRowIndex + "+1"), new Uppaal!ValueIndex.set(endColumnIndex + "+1") };
+		}
+		return self.createConstant(new Uppaal!PredefinedType.set("int").makeInt(), variableName, new Uppaal!LiteralExpression.set("{" + value.concat(", ") + "}"), indices);
+	}
+	
+	operation Collection takeRows (rowLength : Integer, startRowIndex : Integer, endRowIndex : Integer ) : Collection{
+		var rows = Collection {};
+		for (rowIndex in Sequence{startRowIndex..endRowIndex}) {
+			var startCellIndex = rowIndex * rowLength;
+			var endCellIndex = startCellIndex + rowLength -1;
+			var row = Collection {};
+			for (cellIndex in Sequence{startCellIndex..endCellIndex}) {
+				row.add(self.at(cellIndex));
+			}
+			rows.add(row); 
+		 }
+		return rows;
+	}
+	
+	operation Collection takeRow (rowLength : Integer, RowIndex : Integer) : Collection{
+		return self.takeRows(rowLength, RowIndex, RowIndex).at(0);
+	}
+	
+	operation Uppaal!NSTA createReactionTemplates(enabledEdges : Collection, globals : ConcurrentMap) : ConcurrentMap {
+		return enabledEdges.aggregate(edge|edge.getId(), self.createReactionTemplate(edge, globals));
+	}
+	
+	operation Uppaal!NSTA createReactionTemplate(edge : Animo!Edge, globals : ConcurrentMap) : Uppaal!Template {
+		var r = new Uppaal!Template.set("Reaction_" + edge.getCatalyst().getId() + "_" + edge.getReactant().getId()).set(new Uppaal!LocalDeclarations);
+		var locals = new ConcurrentMap;
+		r.declarations = new Uppaal!LocalDeclarations;
+		locals.putAll(r.declarations.createClocks());		
+		locals.putAll(r.declarations.createVariables(globals));
+		if (edge.getCatalyst() == edge.getReactant() and edge.scenario != 0) {
+			locals.putAll(r.createReactantTemplateParameters1(edge));
+			locals.putAll(r.createReactantTemplateParameters2a(edge));
+			locals.putAll(r.createReactantTemplateParameters3(edge));
+			var indices1 = Sequence { locals.get("r2"), locals.get("r1")};
+			var indices2 = Sequence { locals.get("reactant2"), locals.get("reactant1")};
+			var assignments = new ConcurrentMap;
+			assignments.put(locals.get("r1"), locals.get("reactant1"));
+			assignments.put(locals.get("r2"), locals.get("reactant2"));
+			r.createReactantTemplateLocationsAndTransitions(edge, globals, locals, indices1, indices2, edge.target.levels, edge.target.levels, assignments);
+		}
+		else if (edge.scenario == 0) {
+			locals.putAll(r.createReactantTemplateParameters1(edge));
+			locals.putAll(r.createReactantTemplateParameters2b(edge));
+			locals.putAll(r.createReactantTemplateParameters3(edge));
+			var indices1 = Sequence { locals.get("r1")};
+			var indices2 = Sequence { locals.get("reactant1")};
+			var assignments = new ConcurrentMap;
+			assignments.put(locals.get("r1"), locals.get("reactant1"));
+			r.createReactantTemplateLocationsAndTransitions(edge, globals, locals, indices1, indices2, edge.target.levels, edge.target.levels, assignments);			
+		}
+		else {
+			locals.putAll(r.createReactantTemplateParameters1(edge));
+			locals.putAll(r.createReactantTemplateParameters2c(edge));
+			locals.putAll(r.createReactantTemplateParameters3(edge));			
+			var indices1 = Sequence { locals.get("r2"), locals.get("r1")};
+			var indices2 = Sequence { locals.get("reactant2"), locals.get("reactant1")};
+			var assignments = new ConcurrentMap;
+			assignments.put(locals.get("r1"), locals.get("reactant1"));
+			assignments.put(locals.get("r2"), locals.get("reactant2"));
+			var locations = r.createReactantTemplateLocationsAndTransitions(edge, globals, locals, indices1, indices2, edge.target.levels, edge.target.levels, assignments);
+			r.createReactantTemplateTransitions(locals, locations);
+		}
+		self.template.add(r);
+		return r;
+	}
+	
+	operation Uppaal!LocalDeclarations createClocks() : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("c", self.createClock(new Uppaal!PredefinedType.set("clock").makeClock(), "c"));
+		return r;
+	}
+	
+	operation Uppaal!LocalDeclarations createVariables(globals : ConcurrentMap) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		r.put("r1", self.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "r1"));
+		r.put("r2", self.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "r2"));
+		r.put("T", self.createVariable(new Uppaal!PredefinedType.set("int[-1, 1073741822]").makeInt(), "T"));
+		return r;
+	}
+	
+	operation Uppaal!Template createReactantTemplateParameters1(edge : Animo!Edge) : ConcurrentMap {
+		var r = new ConcurrentMap;	
+		var variableDeclarationReactant1 = new Uppaal!DataVariableDeclaration;
+		var variableDeclarationReactant2 = new Uppaal!DataVariableDeclaration;
+		var variableDeclarationOutput = new Uppaal!DataVariableDeclaration;
+		r.put("reactant1", variableDeclarationReactant1.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "reactant1"));
+		r.put("reactant2", variableDeclarationReactant2.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "reactant2"));
+		r.put("output", variableDeclarationOutput.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "output"));					
+		self.add(new Uppaal!Parameter.set(variableDeclarationReactant1).makeReference());
+		self.add(new Uppaal!Parameter.set(variableDeclarationReactant2).makeReference());
+		self.add(new Uppaal!Parameter.set(variableDeclarationOutput).makeReference());
+		return r;
+	}
+	
+	operation Uppaal!Template createReactantTemplateParameters2a(edge : Animo!Edge) : ConcurrentMap {
+		var r = new ConcurrentMap;	
+		var variableDeclarationTimeL = new Uppaal!DataVariableDeclaration;
+		var variableDeclarationTimeU = new Uppaal!DataVariableDeclaration;
+		r.put("timeL", variableDeclarationTimeL.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "timeL", Sequence{ new Uppaal!ValueIndex.set(new Uppaal!LiteralExpression.set(edge.getCatalyst().levels.asString() + "+1")), new Uppaal!ValueIndex.set(new Uppaal!LiteralExpression.set(edge.getCatalyst().levels.asString() + "+1")) } ));
+		r.put("timeU", variableDeclarationTimeU.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "timeU", Sequence{ new Uppaal!ValueIndex.set(new Uppaal!LiteralExpression.set(edge.getCatalyst().levels.asString() + "+1")), new Uppaal!ValueIndex.set(new Uppaal!LiteralExpression.set(edge.getCatalyst().levels.asString() + "+1")) } ));		
+		self.add(new Uppaal!Parameter.set(variableDeclarationTimeL.makeConstant()));
+		self.add(new Uppaal!Parameter.set(variableDeclarationTimeU.makeConstant()));
+		return r;
+
+	}
+	
+	operation Uppaal!Template createReactantTemplateParameters2b(edge : Animo!Edge) : ConcurrentMap {
+		var r = new ConcurrentMap;	
+		var variableDeclarationTimeL = new Uppaal!DataVariableDeclaration;
+		var variableDeclarationTimeU = new Uppaal!DataVariableDeclaration;
+		r.put("timeL", variableDeclarationTimeL.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "timeL", new Uppaal!ValueIndex.set(new Uppaal!LiteralExpression.set(edge.getCatalyst().levels.asString() + "+1"))));
+		r.put("timeU", variableDeclarationTimeU.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "timeU", new Uppaal!ValueIndex.set(new Uppaal!LiteralExpression.set(edge.getCatalyst().levels.asString() + "+1"))));		
+		self.add(new Uppaal!Parameter.set(variableDeclarationTimeL.makeConstant()));
+		self.add(new Uppaal!Parameter.set(variableDeclarationTimeU.makeConstant()));
+		return r;
+	}
+	
+	
+	operation Uppaal!Template createReactantTemplateParameters2c(edge : Animo!Edge) : ConcurrentMap {
+		var r = new ConcurrentMap;	
+		var variableDeclarationTimeL = new Uppaal!DataVariableDeclaration;
+		var variableDeclarationTimeU = new Uppaal!DataVariableDeclaration;
+		r.put("timeL", variableDeclarationTimeL.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "timeL", Sequence{ new Uppaal!ValueIndex.set(new Uppaal!LiteralExpression.set(edge.getReactant().levels.asString() + "+1")), new Uppaal!ValueIndex.set(new Uppaal!LiteralExpression.set(edge.getCatalyst().levels.asString() + "+1")) } ));
+		r.put("timeU", variableDeclarationTimeU.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "timeU", Sequence{ new Uppaal!ValueIndex.set(new Uppaal!LiteralExpression.set(edge.getReactant().levels.asString() + "+1")), new Uppaal!ValueIndex.set(new Uppaal!LiteralExpression.set(edge.getCatalyst().levels.asString() + "+1")) } ));		
+		self.add(new Uppaal!Parameter.set(variableDeclarationTimeL.makeConstant()));
+		self.add(new Uppaal!Parameter.set(variableDeclarationTimeU.makeConstant()));	
+		return r;
+	}
+	
+	operation Uppaal!Template createReactantTemplateParameters3(edge : Animo!Edge) : ConcurrentMap {
+		var r = new ConcurrentMap;	
+		var variableDeclarationDelta = new Uppaal!DataVariableDeclaration;
+		var channelVariableDeclarationR1Reacting = new Uppaal!ChannelVariableDeclaration.makeBroadcast();
+		var channelVariableDeclarationR2Reacting = new Uppaal!ChannelVariableDeclaration.makeBroadcast();
+		var channelVariableDeclarationOutputReacting = new Uppaal!ChannelVariableDeclaration.makeBroadcast();
+		r.put("delta", variableDeclarationDelta.createVariable(new Uppaal!PredefinedType.set("int").makeInt(), "delta"));		
+		r.put("r1_reacting", channelVariableDeclarationR1Reacting.createChannelVariable("r1_reacting"));
+		r.put("r2_reacting", channelVariableDeclarationR2Reacting.createChannelVariable("r2_reacting"));
+		r.put("output_reacting", channelVariableDeclarationOutputReacting.createChannelVariable("output_reacting"));			
+		self.add(new Uppaal!Parameter.set(variableDeclarationDelta.makeConstant()));
+		self.add(new Uppaal!Parameter.set(channelVariableDeclarationR1Reacting).makeReference());
+		self.add(new Uppaal!Parameter.set(channelVariableDeclarationR2Reacting).makeReference());
+		self.add(new Uppaal!Parameter.set(channelVariableDeclarationOutputReacting).makeReference());
+		return r;
+	}
+	
+	operation Uppaal!Template createReactantTemplateLocationsAndTransitions(edge : Animo!Edge, globals : ConcurrentMap, locals : ConcurrentMap, indices1: Collection, indices2: Collection, value1: Integer, value2: Integer, assignments : ConcurrentMap) : ConcurrentMap {
+		var r = new ConcurrentMap;
+		var id0 = self.createLocation("id0_stubborn", -1512, -696).makeCommitted();		
+		var id1 = self.createLocation("id1_not_reacting", -1384, -976);
+		var id2 = self.createLocation("id2_resetting", -960, -856).makeCommitted();
+		var equation1 = new Uppaal!CompareExpression.set(new Uppaal!IdentifierExpression.set(locals.get("timeU")).add(indices1.collect(i|new Uppaal!IdentifierExpression.set(i))), Uppaal!CompareOperator#EQUAL, globals.get("INFINITE_TIME"));
+		var equation2 = new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#LESS_OR_EQUAL, new Uppaal!IdentifierExpression.set(locals.get("timeU")).add(indices1.collect(i|new Uppaal!IdentifierExpression.set(i))));
+		var equation3 = new Uppaal!LogicalExpression.set(equation1, Uppaal!LogicalOperator#OR, equation2);
+		var id3 = self.createLocation("id3_reacting", -1384, -768).setInvariant(equation3);				
+		var id4 = self.createLocation("id4_start", -1384, -896).makeCommitted();
+		self.init = id4;
+		var id5 = self.createLocation("id5_about_to_react", -1248, -624);
+		r.put("id0", id0);
+		r.put("id1", id1);
+		r.put("id2", id2);
+		r.put("id3", id3);
+		r.put("id4", id4);
+		r.put("id5", id5);
+		var equation4 = new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#LESS_OR_EQUAL, new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices1.collect(i|new Uppaal!IdentifierExpression.set(i))));
+		self.createEdge(id0, id2).setGuard(equation4);
+		var equation5 = new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#GREATER_OR_EQUAL, new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices1.collect(i|new Uppaal!IdentifierExpression.set(i)))); 
+		self.createEdge(id0, id3).setGuard(equation5);
+		self.createEdge(id3, id0).createSynchronization(new Uppaal!IdentifierExpression.set(locals.get("r1_reacting")), false);
+		var assignment1 = new Uppaal!AssignmentExpression.set(locals.get("c"), new Uppaal!IdentifierExpression.set(locals.get("timeU")).add(indices1.collect(i|new Uppaal!IdentifierExpression.set(i))));
+		self.createEdge(id5, id3).addUpdate(assignment1).createSynchronization(new Uppaal!IdentifierExpression.set(locals.get("output_reacting")), false);	
+		self.createEdge(id1, id2).addUpdate(new Uppaal!AssignmentExpression.set(locals.get("c"), "0")).createSynchronization(new Uppaal!IdentifierExpression.set(locals.get("r1_reacting")), false);			
+		var equation6 = new Uppaal!CompareExpression.set(new Uppaal!ArithmeticExpression.set(locals.get("output"), Uppaal!ArithmeticOperator#ADD, locals.get("delta")), Uppaal!CompareOperator#GREATER, value1); 
+		var equation7 = new Uppaal!CompareExpression.set(new Uppaal!ArithmeticExpression.set(locals.get("output"), Uppaal!ArithmeticOperator#ADD, locals.get("delta")), Uppaal!CompareOperator#LESS, "0"); 
+		var equation8 = new Uppaal!CompareExpression.set(new Uppaal!IdentifierExpression.set(locals.get("c")), Uppaal!CompareOperator#GREATER_OR_EQUAL, new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices1.collect(i|new Uppaal!IdentifierExpression.set(i)))); 
+		var equation9 = new Uppaal!LogicalExpression.set(equation6, Uppaal!LogicalOperator#OR, equation7);
+		var equation10 = new Uppaal!LogicalExpression.set(equation8, Uppaal!LogicalOperator#AND, equation9);
+		self.createEdge(id3, id5).setGuard(equation10);
+		var sum1 = new Uppaal!ArithmeticExpression.set(locals.get("output"), Uppaal!ArithmeticOperator#ADD, locals.get("delta"));
+		var assignment2 = new Uppaal!AssignmentExpression.set(locals.get("output"), sum1);
+		var equation11 = new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#GREATER_OR_EQUAL, new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices1.collect(i|new Uppaal!IdentifierExpression.set(i)))); 
+		var equation12 = new Uppaal!CompareExpression.set(new Uppaal!ArithmeticExpression.set(locals.get("output"), Uppaal!ArithmeticOperator#ADD, locals.get("delta")), Uppaal!CompareOperator#GREATER_OR_EQUAL, "0"); 
+		var equation13 = new Uppaal!CompareExpression.set(new Uppaal!ArithmeticExpression.set(locals.get("output"), Uppaal!ArithmeticOperator#ADD, locals.get("delta")), Uppaal!CompareOperator#LESS_OR_EQUAL, value2); 
+		var equation14 = new Uppaal!LogicalExpression.set(equation12, Uppaal!LogicalOperator#AND, equation13);
+		var equation16 = new Uppaal!LogicalExpression.set(equation11, Uppaal!LogicalOperator#AND, equation14);
+		self.createEdge(id3, id2).setGuard(equation16).addUpdate(assignment2).addUpdate(new Uppaal!AssignmentExpression.set(locals.get("c"), "0")).createSynchronization(new Uppaal!IdentifierExpression.set(locals.get("output_reacting")), true);	
+		var equation17a = new Uppaal!CompareExpression.set(new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices2.collect(i|new Uppaal!IdentifierExpression.set(i))), Uppaal!CompareOperator#EQUAL, globals.get("INFINITE_TIME"));
+		self.createEdge(id2, id1).setGuard(equation17a);
+		var equation17b = new Uppaal!CompareExpression.set(new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices2.collect(i|new Uppaal!IdentifierExpression.set(i))), Uppaal!CompareOperator#EQUAL, globals.get("INFINITE_TIME"));		
+		self.createEdge(id4, id1).setGuard(equation17b);		
+		var equation18a = new Uppaal!CompareExpression.set(new Uppaal!IdentifierExpression.set(locals.get("timeU")).add(indices2.collect(i|new Uppaal!IdentifierExpression.set(i))), Uppaal!CompareOperator#UNEQUAL, globals.get("INFINITE_TIME")); 
+		var equation19 = new Uppaal!CompareExpression.set(locals.get("c"), Uppaal!CompareOperator#GREATER, new Uppaal!IdentifierExpression.set(locals.get("timeU")).add(indices2.collect(i|new Uppaal!IdentifierExpression.set(i))));
+		var equation20 = new Uppaal!LogicalExpression.set(equation18a, Uppaal!LogicalOperator#AND, equation19);
+		var assignment3 = new Uppaal!AssignmentExpression.set(locals.get("c"), new Uppaal!IdentifierExpression.set(locals.get("timeU")).add(indices2.collect(i|new Uppaal!IdentifierExpression.set(i))));		
+		var assignments1 = assignments.keySet().collect(left|new Uppaal!AssignmentExpression.set(left, assignments.get(left))); 
+		var assignment4 = new Uppaal!AssignmentExpression.set(locals.get("T"), new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices1.collect(i|new Uppaal!IdentifierExpression.set(i))));		
+		self.createEdge(id2, id3).setGuard(equation20).addUpdate(assignment3).addUpdates(assignments1).addUpdate(assignment4);
+		var equation21 = new Uppaal!CompareExpression.set(new Uppaal!IdentifierExpression.set(locals.get("timeU")).add(indices2.collect(i|new Uppaal!IdentifierExpression.set(i))), Uppaal!CompareOperator#EQUAL, globals.get("INFINITE_TIME")); 
+		var equation22a = new Uppaal!CompareExpression.set(new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices2.collect(i|new Uppaal!IdentifierExpression.set(i))), Uppaal!CompareOperator#UNEQUAL, globals.get("INFINITE_TIME")); 
+		var equation18b = new Uppaal!CompareExpression.set(new Uppaal!IdentifierExpression.set(locals.get("timeU")).add(indices2.collect(i|new Uppaal!IdentifierExpression.set(i))), Uppaal!CompareOperator#UNEQUAL, globals.get("INFINITE_TIME")); 
+		var equation23 = new Uppaal!CompareExpression.set(new Uppaal!IdentifierExpression.set(locals.get("c")), Uppaal!CompareOperator#LESS_OR_EQUAL, new Uppaal!IdentifierExpression.set(locals.get("timeU")).add(indices2.collect(i|new Uppaal!IdentifierExpression.set(i)))); 
+		var equation24 = new Uppaal!LogicalExpression.set(equation21, Uppaal!LogicalOperator#AND, equation22a);
+		var equation25 = new Uppaal!LogicalExpression.set(equation18b, Uppaal!LogicalOperator#AND, equation23);
+		var equation26 = new Uppaal!LogicalExpression.set(equation24, Uppaal!LogicalOperator#OR, equation25);
+		var assignments2 = assignments.keySet().collect(left|new Uppaal!AssignmentExpression.set(left, assignments.get(left))); 
+		var assignment5 = new Uppaal!AssignmentExpression.set(locals.get("T"), new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices1.collect(i|new Uppaal!IdentifierExpression.set(i))));
+		self.createEdge(id2, id3).setGuard(equation26).addUpdates(assignments2).addUpdate(assignment5);			
+		var equation22b = new Uppaal!CompareExpression.set(new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices2.collect(i|new Uppaal!IdentifierExpression.set(i))), Uppaal!CompareOperator#UNEQUAL, globals.get("INFINITE_TIME"));
+		var assignments3 = assignments.keySet().collect(left|new Uppaal!AssignmentExpression.set(left, assignments.get(left))); 
+		var assignment6 = new Uppaal!AssignmentExpression.set(locals.get("T"), new Uppaal!IdentifierExpression.set(locals.get("timeL")).add(indices1.collect(i|new Uppaal!IdentifierExpression.set(i))));
+		self.createEdge(id4, id3).setGuard(equation22b).addUpdates(assignments3).addUpdate(assignment6).addUpdate(new Uppaal!AssignmentExpression.set(locals.get("c"), "0"));
+		return r;
+	}
+	
+	operation Uppaal!Template createReactantTemplateTransitions(locals : ConcurrentMap, locations : ConcurrentMap) {
+		self.createEdge(locations.get("id1"), locations.get("id2")).addUpdate(new Uppaal!AssignmentExpression.set(locals.get("c"), "0")).createSynchronization(new Uppaal!IdentifierExpression.set(locals.get("r2_reacting")), false);
+		self.createEdge(locations.get("id3"), locations.get("id0")).createSynchronization(new Uppaal!IdentifierExpression.set(locals.get("r2_reacting")), false);
+	}
+	
+	operation Uppaal!SystemDeclarations createTemplateDeclarations(enabledEdges : Collection, reactionTemplates : ConcurrentMap, globals: ConcurrentMap) : Uppaal!SystemDeclarations {
+		return self.addTemplateDeclarations(enabledEdges.collect(edge|self.createTemplateDeclaration(edge, reactionTemplates.get(edge.getId()), globals)));
+	}
+		
+	operation Uppaal!SystemDeclarations createTemplateDeclaration(edge : Animo!Edge, template : Uppaal!Template, globals: ConcurrentMap) : Uppaal!RedefinedTemplate {
+		var r = template.createRedefinedTemplate(edge.getCatalyst().getId() + "_" + edge.getReactant().getId());
+		var templateDeclaration = new Uppaal!TemplateDeclaration;
+		var catalyst = globals.get(edge.getCatalyst().getId());
+		var reactant = globals.get(edge.getReactant().getId());
+		var output = globals.get(edge.target.getId());
+		var lowerTimeTable = globals.get(edge.getId() + "_tLower");
+		var upperTimeTable = globals.get(edge.getId() + "_tUpper");
+		var increment = edge.increment;
+		var reactingCatalyst = new Uppaal!IdentifierExpression.set(globals.get("reacting")).add(edge.getCatalyst().index);
+		var reactingReactant = new Uppaal!IdentifierExpression.set(globals.get("reacting")).add(edge.getReactant().index);
+		var reactingOutput = new Uppaal!IdentifierExpression.set(globals.get("reacting")).add(edge.target.index);		
+		templateDeclaration.set(r).add(catalyst).add(reactant).add(output).add(lowerTimeTable).add(upperTimeTable).add(increment).add(reactingCatalyst).add(reactingReactant).add(reactingOutput);
+		self.declaration.add(templateDeclaration);
+		return r;
+	}
+	
+	operation Animo!Edge computeTimes(upperTimes : Boolean, uncertainty : Real, timeScaleFactor : Real) : Collection {
+		// This code is adopted from animo.core.model.Scenario with minimal changes.
+		var r = Sequence {};
+		var endColumnIndex : Integer = self.getCatalyst().levels;
+		var endRowIndex : Integer = self.getReactant().levels;
+		var reactant1IsDownstream = false;
+		var reactant2IsDownstream = true;		
+		if (self.scenario == 2) {
+			reactant1IsDownstream = self.getCatalyst() == self.target;
+			reactant2IsDownstream = self.getReactant() == self.target;
+		} 
+		var i; 
+		var limitI;
+		if (not self.getActiveR2()) {
+			i = 0;
+			limitI = endRowIndex-1;
+		} 
+		else {
+			if (reactant2IsDownstream) {
+				for (j in Sequence{0..endColumnIndex}) { r.add(self.computeTime(upperTimes, uncertainty, timeScaleFactor, j, endColumnIndex, self.getActiveR1(), 1, endRowIndex, self.getActiveR2())); }
+			} 
+			else {
+				for (j in Sequence{0..endColumnIndex}) { r.add("INFINITE_TIME"); }
+			}
+			i = 1;
+			limitI = endRowIndex;
+		}
+		for (i in Sequence{i..limitI}) {
+			var j;
+			var limitJ;
+			if (not self.getActiveR1()) {
+				j = 0;
+				limitJ = endColumnIndex-1;
+			} 
+			else {
+				if (reactant1IsDownstream) {
+					r.add(self.computeTime(upperTimes, uncertainty, timeScaleFactor, 1, endColumnIndex, self.getActiveR1(), i, endRowIndex, self.getActiveR2()));
+				} else {
+					r.add("INFINITE_TIME");
+				}
+				j = 1;
+				limitJ = endColumnIndex;
+			}
+			var limitScenario0 = (self.getCatalyst().levels + 1)*2;
+			for (j in Sequence{j..limitJ}) {
+				if(self.scenario == 0 and r.size() >= limitScenario0){ return r;}
+				r.add(self.computeTime(upperTimes, uncertainty, timeScaleFactor, j, endColumnIndex, self.getActiveR1(), i, endRowIndex, self.getActiveR2()));
+			}
+			if (not self.getActiveR1()) {
+				if (reactant1IsDownstream) {
+					r.add(self.computeTime(upperTimes, uncertainty, timeScaleFactor, endColumnIndex - 1, endColumnIndex, self.getActiveR1(), i, endRowIndex, self.getActiveR2()));
+				} 
+				else {
+					r.add("INFINITE_TIME");
+				}
+			}
+		}
+		if (not self.getActiveR2()) {
+			for (j in Sequence{0..endColumnIndex}) {
+				if (reactant2IsDownstream) {
+					r.add(self.computeTime(upperTimes, uncertainty, timeScaleFactor, j, endColumnIndex, self.getActiveR1(), endRowIndex - 1, endRowIndex, self.getActiveR2()));
+				} 
+				else {
+					r.add("INFINITE_TIME");
+				}
+			}
+		}
+		return r;
+	}
+	
+	@cached
+	operation Animo!Edge computeTime(upperTime : Boolean, uncertainty : Real, timeScaleFactor : Real, r1Level : Integer, nLevelsR1 : Integer, activeR1 : Boolean, r2Level : Integer, nLevelsR2 : Integer, activeR2 : Boolean) : String {
+		// This code is adopted from animo.core.model.Scenario with minimal changes.
+		var r : String;
+		var rate : Real;
+		if (self.scenario == 0) {
+			var e : Real;
+			if (activeR1) {
+				e = r1Level;
+			} 
+			else {
+				e = nLevelsR1 - r1Level;
+			}
+			rate = self.k * e;
+		}
+		else if (self.scenario == 1) {
+			var s : Real;
+			var e : Real;
+			if (activeR1) {
+				e = r1Level;
+			} 
+			else {
+				e = nLevelsR1 - r1Level;
+			}
+			if (activeR2) {
+				s = r2Level;
+			} 
+			else {
+				s = nLevelsR2 - r2Level;
+			}
+			rate = self.k * e * s;
+		}
+		else if (self.scenario == 2) {
+			var e1 : Real;
+			var e2 : Real;
+			if (activeR1) {
+				e1 = r1Level;
+			} 
+			else {
+				e1 = nLevelsR1 - r1Level;
+			}
+			if (activeR2) {
+				e2 = r2Level;
+			} 
+			else {
+				e2 = nLevelsR2 - r2Level;
+			}
+			rate = self.k * e1 * e2;
+		}
+		else if (self.scenario == 3) {
+			var e1 : Real;
+			var e2 : Real;
+			if (activeR1) {
+				e1 = r1Level;
+			} 
+			else {
+				e1 = nLevelsR1 - r1Level;
+			}
+			if (activeR2) {
+				e2 = r2Level;
+			} 
+			else {
+				e2 = nLevelsR2 - r2Level;
+			}
+			rate = self.k * e1 * e2;
+		}
+		if (rate > 1e-8) {
+			var x: Real = (1.0 / rate);
+			var y: Integer;			
+			if(uncertainty == 0) { 
+				y = Math.round(timeScaleFactor * self.levelsScaleFactor * x).asInteger();
+			}
+			else if(uncertainty > 0 and upperTime) {
+				y = Math.max(0, Math.round(timeScaleFactor * self.levelsScaleFactor * x * (1 + uncertainty / 100.0)).asInteger());
+			}
+			else if(uncertainty > 0 and not upperTime) {
+				y = Math.max(0, Math.round(timeScaleFactor * self.levelsScaleFactor * x * (1 - uncertainty / 100.0)).asInteger());
+			}			
+			r = y.asString();
+		}
+		else {
+		 	r = "INFINITE_TIME";
+	 	}	 	
+	 	return r;
+	}
+	

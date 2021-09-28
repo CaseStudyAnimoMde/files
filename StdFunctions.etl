@@ -1,0 +1,809 @@
+operation Uppaal!Variable set(name : String) : Uppaal!Variable {
+	self.name = name;
+	return self;
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer) : Uppaal!Variable {
+	self.set(name);
+	self.container = container;
+	return self;
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer, value : Uppaal!Expression) : Uppaal!Variable {
+	self.set(name, container);
+	self.initializer = new Uppaal!ExpressionInitializer;
+	self.initializer.expression = value;
+	return self;
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer, value : String) : Uppaal!Variable {
+	return self.set(name, container, new Uppaal!LiteralExpression.set(value));
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer, value : Integer) : Uppaal!Variable {
+	return self.set(name, container, new Uppaal!LiteralExpression.set(value));
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer, value : Real) : Uppaal!Variable {
+	return self.set(name, container, new Uppaal!LiteralExpression.set(value));
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer, indices : Collection) : Uppaal!Variable {
+	self.set(name, container) ;
+	self.index.addAll(indices);
+	return self;
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer, index : Uppaal!ValueIndex) : Uppaal!Variable {
+	return self.set(name, container, Sequence{index});
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer, value : Uppaal!Expression, indices : Collection) : Uppaal!Variable {
+	self.set(name, container, value);
+	self.index.addAll(indices);
+	return self;
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer, value : String, indices : Collection) : Uppaal!Variable {
+	return self.set(name, container, new Uppaal!LiteralExpression.set(value), indices);
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer, value : Uppaal!Expression, index : Uppaal!ValueIndex) : Uppaal!Variable {
+	return self.set(name, container, value, Sequence{index});
+}
+
+operation Uppaal!Variable set(name : String, container : Uppaal!VariableContainer, value : String, index : Uppaal!ValueIndex) : Uppaal!Variable {
+	return self.set(name, container, new Uppaal!LiteralExpression.set(value), index);
+}
+
+operation Uppaal!DataVariableDeclaration set(type : Uppaal!Type) : Uppaal!DataVariableDeclaration {
+	self.prefix = Uppaal!DataVariablePrefix#NONE;
+	self.typeDefinition = new Uppaal!TypeReference.set(type);
+	return self;
+}
+
+operation Uppaal!DataVariableDeclaration add(variable : Uppaal!Variable) : Uppaal!DataVariableDeclaration {
+	self.variable.add(variable);
+	return self;
+}
+
+operation Uppaal!ChannelVariableDeclaration set(type : Uppaal!Type) : Uppaal!ChannelVariableDeclaration {
+	self.typeDefinition = new Uppaal!TypeReference.set(type);
+	return self;
+}
+
+operation Uppaal!ClockVariableDeclaration set(type : Uppaal!Type) : Uppaal!ClockVariableDeclaration {
+	self.typeDefinition = new Uppaal!TypeReference.set(type);
+	return self;
+}
+
+operation Uppaal!DataVariableDeclaration makeConstant() : Uppaal!DataVariableDeclaration {
+	self.prefix = Uppaal!DataVariablePrefix#CONST;
+	return self;
+}
+
+operation Uppaal!ChannelVariableDeclaration makeBroadcast() : Uppaal!ChannelVariableDeclaration {
+	self.broadcast = true;
+	return self;
+}
+
+operation Uppaal!VariableContainer setVariable(type : Uppaal!Type, variable : Uppaal!Variable) : Uppaal!Variable {
+	var r = variable;
+	self.set(type);
+	self.variable.add(variable);
+	return r;
+}
+
+operation Uppaal!VariableContainer createVariable(type : Uppaal!Type, variableName : String) : Uppaal!Variable {
+	return self.setVariable(type, new Uppaal!Variable.set(variableName, self));
+}
+
+operation Uppaal!VariableContainer createVariable(type : Uppaal!Type, variableName : String, value : Any) : Uppaal!Variable {
+	return self.setVariable(type, new Uppaal!Variable.set(variableName, self, value));
+}
+
+operation Uppaal!VariableContainer createVariable(type : Uppaal!Type, variableName : String, value : Any, indices : Collection) : Uppaal!Variable {
+	return self.setVariable(type, new Uppaal!Variable.set(variableName, self, value, indices));
+}
+
+operation Uppaal!VariableContainer createVariable(type : Uppaal!Type, variableName : String, value : Any, index : Uppaal!ValueIndex) : Uppaal!Variable {
+	return self.setVariable(type, new Uppaal!Variable.set(variableName, self, value, index));
+}
+
+operation Uppaal!VariableContainer createVariable(type : Uppaal!Type, variableName : String, index : Uppaal!ValueIndex) : Uppaal!Variable {
+	return self.setVariable(type, new Uppaal!Variable.set(variableName, self, index));
+}
+
+operation Uppaal!VariableContainer createVariable(type : Uppaal!Type, variableName : String, indices : Collection) : Uppaal!Variable {
+	return self.setVariable(type, new Uppaal!Variable.set(variableName, self, indices));
+}
+
+operation Uppaal!Selection set(type : Uppaal!Type) : Uppaal!Selection {
+	self.typeDefinition = new Uppaal!TypeReference.set(type);
+	return self;
+}
+
+operation Uppaal!Type set(name : String) : Uppaal!Type {
+	self.name = name;
+	return self;
+}
+
+operation Uppaal!Function set(name : String) : Uppaal!Function {
+	self.name = name;
+	return self;
+}
+
+operation Uppaal!PredefinedType makeInt() : Uppaal!PredefinedType {
+	self.type = Uppaal!BuiltInType#INT;
+	return self;
+}
+
+operation Uppaal!PredefinedType makeVoid() : Uppaal!PredefinedType {
+	self.type = Uppaal!BuiltInType#VOID;
+	return self;
+}
+
+operation Uppaal!PredefinedType makeBool() : Uppaal!PredefinedType {
+	self.type = Uppaal!BuiltInType#BOOL;
+	return self;
+}
+
+operation Uppaal!PredefinedType makeChan() : Uppaal!PredefinedType {
+	self.type = Uppaal!BuiltInType#CHAN;
+	return self;
+}
+
+operation Uppaal!PredefinedType makeClock() : Uppaal!PredefinedType {
+	self.type = Uppaal!BuiltInType#CLOCK;
+	return self;
+}
+
+operation Uppaal!LiteralExpression set(text : String) : Uppaal!LiteralExpression {
+	self.text = text;
+	return self;
+}
+
+operation Uppaal!LiteralExpression set(text : Integer) : Uppaal!LiteralExpression {
+	self.text = text.asString();
+	return self;
+}
+
+operation Uppaal!LiteralExpression set(text : Real) : Uppaal!LiteralExpression {
+	self.text = text.asString();
+	return self;
+}
+
+operation Uppaal!LiteralExpression set(text : Boolean) : Uppaal!LiteralExpression {
+	self.text = text.asString();
+	return self;
+}
+
+operation Uppaal!IdentifierExpression set(variable : Uppaal!Variable) : Uppaal!IdentifierExpression {
+	self.identifier = variable;
+	return self;
+}
+
+operation Uppaal!IdentifierExpression add(index : Uppaal!Expression) : Uppaal!IdentifierExpression {
+	self.index.add(index);
+	return self;
+}
+
+operation Uppaal!IdentifierExpression add(index : String) : Uppaal!IdentifierExpression {
+	return self.add(new Uppaal!LiteralExpression.set(index));
+}
+
+operation Uppaal!IdentifierExpression add(index : Integer) : Uppaal!IdentifierExpression {
+	return self.add(new Uppaal!LiteralExpression.set(index));
+}
+
+operation Uppaal!IdentifierExpression add(index : Real) : Uppaal!IdentifierExpression {
+	return self.add(new Uppaal!LiteralExpression.set(index));
+}
+
+operation Uppaal!IdentifierExpression add(indices : Collection) : Uppaal!IdentifierExpression {
+	self.index.addAll(indices);
+	return self;
+}
+
+operation Uppaal!ValueIndex set(index : Uppaal!Expression) : Uppaal!ValueIndex {
+	self.sizeExpression = index;
+	return self;
+}
+
+operation Uppaal!ValueIndex set(index : String) : Uppaal!ValueIndex {
+	self.sizeExpression = new Uppaal!LiteralExpression.set(index);
+	return self;
+}
+
+operation Uppaal!ValueIndex set(index : Integer) : Uppaal!ValueIndex {
+	self.sizeExpression = new Uppaal!LiteralExpression.set(index);
+	return self;
+}
+
+operation Uppaal!ValueIndex set(index : Real) : Uppaal!ValueIndex {
+	self.sizeExpression = new Uppaal!LiteralExpression.set(index);
+	return self;
+}
+
+operation Uppaal!ChannelVariableDeclaration createChannelVariable(variableName : String) : Uppaal!Variable  {
+	return self.createVariable(new Uppaal!PredefinedType.set("chan").makeChan(), variableName);
+}
+
+operation Uppaal!ChannelVariableDeclaration createChannelVariable(variableName : String, index : Any) : Uppaal!Variable  {
+	return self.createVariable(new Uppaal!PredefinedType.set("chan").makeChan(), variableName, new Uppaal!ValueIndex.set(index));
+}
+
+operation Uppaal!Declarations createChannelVariable(variableName : String, broadcast : Boolean) : Uppaal!Variable  {
+	var channelVariableDeclaration = new Uppaal!ChannelVariableDeclaration;
+	if(broadcast){ channelVariableDeclaration.makeBroadcast(); }
+	var r = channelVariableDeclaration.createChannelVariable(variableName);
+	self.declaration.add(channelVariableDeclaration);
+	return r;
+}
+
+operation Uppaal!Declarations createChannelVariable(variableName : String, index : Uppaal!Expression, broadcast : Boolean) : Uppaal!Variable  {
+	var channelVariableDeclaration = new Uppaal!ChannelVariableDeclaration;
+	if(broadcast){ channelVariableDeclaration.makeBroadcast(); }
+	var r = channelVariableDeclaration.createChannelVariable(variableName, index);
+	self.declaration.add(channelVariableDeclaration);
+	return r;
+}
+
+operation Uppaal!Declarations createClock(type : Uppaal!PredefinedType, variableName : String) : Uppaal!Variable {
+	var clockVariableDeclaration = new Uppaal!ClockVariableDeclaration;
+	var r = clockVariableDeclaration.createVariable(type, variableName);
+	self.declaration.add(clockVariableDeclaration);
+	return r;
+}
+
+operation Uppaal!Declarations createVariable(type : Uppaal!PredefinedType, variableName : String) : Uppaal!Variable {
+	var dataVariableDeclaration = new Uppaal!DataVariableDeclaration;
+	var r = dataVariableDeclaration.createVariable(type, variableName);
+	self.declaration.add(dataVariableDeclaration);
+	return r;
+}
+
+operation Uppaal!Declarations createVariable(type : Uppaal!PredefinedType, variableName : String, value : Any) : Uppaal!Variable {
+	var dataVariableDeclaration = new Uppaal!DataVariableDeclaration;
+	var r = dataVariableDeclaration.createVariable(type, variableName, value);
+	self.declaration.add(dataVariableDeclaration);
+	return r;
+}
+
+operation Uppaal!Declarations createVariable(type : Uppaal!PredefinedType, variableName : String, value : Any, index : Uppaal!ValueIndex) : Uppaal!Variable {
+	var dataVariableDeclaration = new Uppaal!DataVariableDeclaration;
+	var r = dataVariableDeclaration.createVariable(type, variableName, value, index);
+	self.declaration.add(dataVariableDeclaration);
+	return r;
+}
+
+operation Uppaal!Declarations createConstant(type : Uppaal!PredefinedType, variableName : String, value : Any) : Uppaal!Variable  {
+	var dataVariableDeclaration = new Uppaal!DataVariableDeclaration;
+	var r = dataVariableDeclaration.createVariable(type, variableName, value);
+	self.declaration.add(dataVariableDeclaration.makeConstant());
+	return r;
+}
+
+operation Uppaal!Declarations createConstant(type : Uppaal!PredefinedType, variableName : String, value : Any, indices : Collection) : Uppaal!Variable  {
+	var dataVariableDeclaration = new Uppaal!DataVariableDeclaration;
+	var r = dataVariableDeclaration.createVariable(type, variableName, value, indices);
+	self.declaration.add(dataVariableDeclaration.makeConstant());
+	return r;
+}
+
+operation Uppaal!Declarations createFunction(returnType : Uppaal!PredefinedType, name : String, functionBody : Uppaal!Block) : Uppaal!Function {	
+	var functionDeclaration = new Uppaal!FunctionDeclaration;
+	var r = new Uppaal!Function;
+	r.returnType = new Uppaal!TypeReference.set(returnType);
+	r.name = name;
+	r.block = functionBody;
+	functionDeclaration.eSet(functionDeclaration.eClass().getEStructuralFeature("function"), r);
+	self.declaration.add(functionDeclaration);
+	return r;
+}
+
+operation Uppaal!Declarations createFunction(returnType : Uppaal!PredefinedType, name : String, parameters : Collection, functionBody : Uppaal!Block) : Uppaal!Function {
+	var r = self.createFunction(returnType, name, functionBody);
+	r.parameter.addAll(parameters);
+	return r;
+}
+
+operation Uppaal!Declarations createFunction(returnType : Uppaal!PredefinedType, name : String, functionBody : Uppaal!Expression) : Uppaal!Function {
+	return self.createFunction(returnType, name, new Uppaal!Block.add(new Uppaal!ExpressionStatement.add(functionBody)));
+}
+
+operation Uppaal!Declarations createFunction(returnType : Uppaal!PredefinedType, name : String, parameters : Collection, functionBody : Uppaal!Expression) : Uppaal!Function {
+	return self.createFunction(returnType, name, parameters, new Uppaal!Block.add(new Uppaal!ExpressionStatement.add(functionBody)));
+}
+
+operation Uppaal!System add(instantiationList : Uppaal!InstantiationList) : Uppaal!System {
+	self.instantiationList.add(instantiationList);
+	return self;
+}
+
+operation Uppaal!InstantiationList add(redefinedTemplate : Uppaal!RedefinedTemplate) : Uppaal!InstantiationList {
+	self.template.add(redefinedTemplate);		
+	return self;
+}
+
+operation Uppaal!InstantiationList add(redefinedTemplates : Collection) : Uppaal!InstantiationList {
+	self.template.addAll(redefinedTemplates);		
+	return self;
+}
+
+operation Uppaal!Block add(statement : Uppaal!Statement) : Uppaal!Block {
+	self.statement.add(statement);
+	return self;
+}
+
+operation Uppaal!ExpressionStatement add(expression : Uppaal!Expression) : Uppaal!ExpressionStatement {
+	self.expression = expression;
+	return self;
+}
+
+operation Uppaal!IfStatement set(ifExpression : Uppaal!Expression, thenStatement : Uppaal!Statement) : Uppaal!IfStatement {
+	self.ifExpression = ifExpression;
+	self.thenStatement = thenStatement;
+	return self;
+}
+
+operation Uppaal!IfStatement set(ifExpression : Uppaal!Expression, thenStatement : Uppaal!Statement, elseStatement : Uppaal!Statement) : Uppaal!IfStatement {
+	self.set(ifExpression, thenStatement);
+	self.elseStatement = elseStatement;
+	return self;
+}
+
+operation Uppaal!TypeReference set(type : Uppaal!Type) : Uppaal!TypeReference {
+	self.referredType = type;
+	return self;
+}
+
+operation Uppaal!Template createLocation(name : String, x : Integer, y : Integer) : Uppaal!Location {
+	var r = new Uppaal!Location;
+	r.position = new Uppaal!Point;
+	r.name = name;
+	r.position.x = x;
+	r.position.y = y;
+	r.locationTimeKind = Uppaal!LocationKind#NORMAL;
+	self.location.add(r);
+	return r;
+}
+
+operation Uppaal!Location setInvariant(text : String) : Uppaal!Location {
+	self.setInvariant(new Uppaal!LiteralExpression.set(text));
+	return self;
+}
+
+operation Uppaal!Location setInvariant(expression : Uppaal!Expression) : Uppaal!Location {
+	self.invariant = expression;
+	return self;
+}
+
+operation Uppaal!Location makeCommitted() : Uppaal!Location {
+	self.locationTimeKind = Uppaal!LocationKind#COMMITED;
+	return self;
+}
+
+operation Uppaal!Location makeUrgent() : Uppaal!Location {
+	self.locationTimeKind = Uppaal!LocationKind#URGENT;
+	return self;
+}
+
+operation Uppaal!Template createRedefinedTemplate(name : String) : Uppaal!RedefinedTemplate {
+	var r = new Uppaal!RedefinedTemplate();
+	r.referredTemplate = self;
+	r.name = name;
+	return r;
+}
+
+operation Uppaal!Template set(name : String) : Uppaal!Template {
+	self.name = name;
+	return self;
+}
+
+operation Uppaal!Template set(declarations : Uppaal!LocalDeclarations) : Uppaal!Template {
+	self.declarations = declarations;
+	return self;
+}
+
+operation Uppaal!Template add(parameter : Uppaal!Parameter) : Uppaal!Template {
+	self.parameter.add(parameter);
+	return self;
+}
+
+operation Uppaal!Template createChanceNode(name : String, x : Integer, y : Integer) : Uppaal!ChanceNode {
+	var r = new Uppaal!ChanceNode;
+	r.position = new Uppaal!Point;
+	r.name = name;
+	r.position.x = x;
+	r.position.y = y;
+	self.location.add(r);
+	return r;
+}
+
+operation Uppaal!Template createEdge(source : Uppaal!Location, target : Uppaal!Location) : Uppaal!Edge {
+	var r = new Uppaal!Edge;
+	r.source = source;
+	r.target = target;
+	self.edge.add(r);
+	return r;
+}
+
+operation Uppaal!Template createChanceEdge(source : Uppaal!Location, target : Uppaal!Location, weight : Integer) : Uppaal!ChanceEdge {
+	var r = new Uppaal!ChanceEdge;
+	r.source = source;
+	r.target = target;
+	r.weight = weight;
+	self.edge.add(r);
+	return r;
+}
+
+operation Uppaal!TemplateDeclaration set(redefinedTemplate : Uppaal!RedefinedTemplate) : Uppaal!TemplateDeclaration {
+	self.declaredTemplate = redefinedTemplate;
+	return self;
+}
+
+operation Uppaal!TemplateDeclaration add(argument : Uppaal!Expression) : Uppaal!TemplateDeclaration {
+	self.argument.add(argument);
+	return self;
+}
+
+operation Uppaal!TemplateDeclaration add(argument : Uppaal!Variable) : Uppaal!TemplateDeclaration {
+	return self.add(new Uppaal!IdentifierExpression.set(argument));
+}
+
+operation Uppaal!TemplateDeclaration add(argument : String) : Uppaal!TemplateDeclaration {
+	return self.add(new Uppaal!LiteralExpression.set(argument));
+}
+
+operation Uppaal!TemplateDeclaration add(argument : Integer) : Uppaal!TemplateDeclaration {
+	return self.add(new Uppaal!LiteralExpression.set(argument));
+}
+
+operation Uppaal!TemplateDeclaration add(argument : Real) : Uppaal!TemplateDeclaration {
+	return self.add(new Uppaal!LiteralExpression.set(argument));
+}
+
+operation Uppaal!Parameter set(variableDeclaration : Uppaal!VariableDeclaration) : Uppaal!Parameter {
+	self.variableDeclaration = variableDeclaration;
+	return self;
+}
+
+operation Uppaal!Parameter setVariable(type : Uppaal!PredefinedType, variableName : String) : Uppaal!Parameter {
+	var dataVariableDeclaration = new Uppaal!DataVariableDeclaration;
+	dataVariableDeclaration.createVariable(type, variableName);
+	return self.set(dataVariableDeclaration);
+}
+
+operation Uppaal!Parameter makeReference() : Uppaal!Parameter {
+	self.callType = Uppaal!CallType#CALL_BY_REFERENCE;
+	return self;
+}
+
+operation Uppaal!LocalDeclarations add(declaration : Uppaal!Declaration) : Uppaal!LocalDeclarations {
+	self.declaration.add(declaration);
+	return self;
+}
+
+operation Uppaal!Edge createSynchronization(identifier : Uppaal!IdentifierExpression, isSend : Boolean) : Uppaal!Synchronization {
+	var r = new Uppaal!Synchronization;
+	r.kind = isSend ? Uppaal!SynchronizationKind#SEND : Uppaal!SynchronizationKind#RECEIVE;
+	r.channelExpression = identifier;
+	self.synchronization = r;
+	return r;
+}
+
+operation Uppaal!Edge setGuard(text : String) : Uppaal!Edge {
+	self.setGuard(new Uppaal!LiteralExpression.set(text));
+	return self;
+}
+
+operation Uppaal!Edge setGuard(expression : Uppaal!Expression) : Uppaal!Edge {
+	self.eSet(self.eClass().getEStructuralFeature("guard"), expression);
+	return self;
+}
+
+operation Uppaal!Edge addUpdate(text : String) : Uppaal!Edge {
+	self.addUpdate(new Uppaal!LiteralExpression.set(text));
+	return self;
+}
+
+operation Uppaal!Edge addUpdate(expression : Uppaal!Expression) : Uppaal!Edge {
+	self.update.add(expression);
+	return self;
+}
+
+operation Uppaal!Edge addUpdates(expressions : Collection) : Uppaal!Edge {
+	self.update.addAll(expressions);
+	return self;
+}
+
+operation Uppaal!Edge createSelection(type : Uppaal!Type, variableName : String)  : Uppaal!Variable {
+	var r;
+	var selection = new Uppaal!Selection;
+	r = selection.createVariable(type, variableName);
+	self.selection.add(selection);
+	return r;
+}
+
+operation Uppaal!Function createFunctionCall() : Uppaal!FunctionCallExpression {
+	return new Uppaal!FunctionCallExpression.set(self);
+}
+
+operation createFunctionCall(functionName : String) : Uppaal!FunctionCallExpression {
+	return new Uppaal!Function.set(functionName).createFunctionCall();
+}
+
+operation Uppaal!FunctionCallExpression set(f : Uppaal!Function) : Uppaal!FunctionCallExpression {
+	self.eSet(self.eClass().getEStructuralFeature("function"), f);
+	return self;
+}
+
+operation Uppaal!FunctionCallExpression add(argument : Uppaal!Expression) : Uppaal!FunctionCallExpression {
+	self.argument.add(argument);
+	return self;
+}
+
+operation Uppaal!FunctionCallExpression add(argument : String) : Uppaal!FunctionCallExpression {
+	return self.add(new Uppaal!LiteralExpression.set(argument));
+}
+
+operation Uppaal!FunctionCallExpression add(argument : Integer) : Uppaal!FunctionCallExpression {
+	return self.add(new Uppaal!LiteralExpression.set(argument));
+}
+
+operation Uppaal!FunctionCallExpression add(argument : Real) : Uppaal!FunctionCallExpression {
+	return self.add(new Uppaal!LiteralExpression.set(argument));
+}
+
+operation Uppaal!FunctionCallExpression add(argument : Uppaal!Variable) : Uppaal!FunctionCallExpression {
+	return self.add(new Uppaal!IdentifierExpression.set(argument));
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Expression, operator : Any, right : Uppaal!Expression) : Uppaal!BinaryExpression {
+	self.operator = operator;
+	self.firstExpr = left;
+	self.secondExpr = right;
+	return self;
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Expression, operator : Any, right :  Uppaal!Variable) : Uppaal!BinaryExpression {
+	return self.set(left, operator, new Uppaal!IdentifierExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Expression, operator : Any, right : String) : Uppaal!BinaryExpression {
+	return self.set(left, operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Expression, operator : Any, right : Integer) : Uppaal!BinaryExpression {
+	return self.set(left, operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Expression, operator : Any, right : Real) : Uppaal!BinaryExpression {
+	return self.set(left, operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Expression, operator : Any, right : Uppaal!Function) : Uppaal!BinaryExpression {
+	return self.set(left, operator, right.createFunctionCall());
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Variable, operator : Any, right : Uppaal!Expression) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!IdentifierExpression.set(left), operator, right);
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Variable, operator : Any, right : Uppaal!Variable) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!IdentifierExpression.set(left), operator, new Uppaal!IdentifierExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Variable, operator : Any, right : String) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!IdentifierExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Variable, operator : Any, right : Integer) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!IdentifierExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Variable, operator : Any, right : Real) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!IdentifierExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Uppaal!Variable, operator : Any, right : Uppaal!Function) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!IdentifierExpression.set(left), operator, right.createFunctionCall());
+}
+
+operation Uppaal!BinaryExpression set(left : String, operator : Any, right : Uppaal!Expression) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, right);
+}
+
+operation Uppaal!BinaryExpression set(left : String, operator : Any, right : Uppaal!Variable) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!IdentifierExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : String, operator : Any, right : String) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : String, operator : Any, right : Integer) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : String, operator : Any, right : Real) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : String, operator : Any, right : Uppaal!Function) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, right.createFunctionCall());
+}
+
+operation Uppaal!BinaryExpression set(left : Integer, operator : Any, right : Uppaal!Expression) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, right);
+}
+
+operation Uppaal!BinaryExpression set(left : Integer, operator : Any, right : Uppaal!Variable) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!IdentifierExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Integer, operator : Any, right : String) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Integer, operator : Any, right : Integer) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Integer, operator : Any, right : Real) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Integer, operator : Any, right : Uppaal!Function) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, right.createFunctionCall());
+}
+
+operation Uppaal!BinaryExpression set(left : Real, operator : Any, right : Uppaal!Expression) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, right);
+}
+
+operation Uppaal!BinaryExpression set(left : Real, operator : Any, right : Uppaal!Variable) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!IdentifierExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Real, operator : Any, right : String) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Real, operator : Any, right : Integer) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Real, operator : Any, right : Real) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, new Uppaal!LiteralExpression.set(right));
+}
+
+operation Uppaal!BinaryExpression set(left : Real, operator : Any, right : Uppaal!Function) : Uppaal!BinaryExpression {
+	return self.set(new Uppaal!LiteralExpression.set(left), operator, right.createFunctionCall());
+}
+
+operation Uppaal!AssignmentExpression set(left : Any, right : Any) : Uppaal!AssignmentExpression {
+	return self.set(left, Uppaal!AssignmentOperator#EQUAL, right);
+}
+
+
+operation Uppaal!MinusExpression set(expression : Uppaal!Expression ) : Uppaal!MinusExpression {
+	self.invertedExpression = expression;
+	return self;
+}
+
+operation Uppaal!MinusExpression set(variable : Uppaal!Variable ) : Uppaal!MinusExpression {
+	self.invertedExpression =  new Uppaal!IdentifierExpression.set(variable);
+	return self;
+}
+
+operation Uppaal!ExpressionStatement set(expression : Uppaal!Expression) : Uppaal!ExpressionStatement {
+	self.expression = expression;
+	return self;
+}
+
+operation Uppaal!ReturnStatement set(expression : Uppaal!Expression) : Uppaal!ReturnStatement {
+	self.returnExpression = expression;
+	return self;
+}
+
+operation Uppaal!ReturnStatement set(variable : Uppaal!Variable) : Uppaal!ReturnStatement {
+	return self.set(new Uppaal!IdentifierExpression.set(variable));
+}
+
+operation Uppaal!ReturnStatement set(value : String) : Uppaal!ReturnStatement {
+	return self.set(new Uppaal!LiteralExpression.set(value));
+}
+
+operation Uppaal!ReturnStatement set(value : Integer) : Uppaal!ReturnStatement {
+	return self.set(new Uppaal!LiteralExpression.set(value));
+}
+
+operation Uppaal!ReturnStatement set(value : Real) : Uppaal!ReturnStatement {
+	return self.set(new Uppaal!LiteralExpression.set(value));
+}
+
+operation Uppaal!SystemDeclarations createTemplateDeclaration(name : String, template : Uppaal!Template) :Uppaal!SystemDeclarations {
+	return self.addTemplateDeclaration(self.createRedefinedTemplate(name, template));
+}
+
+operation Uppaal!SystemDeclarations addTemplateDeclarations(redefinedTemplates : Collection) : Uppaal!SystemDeclarations {
+	self.system = new Uppaal!System.add(new Uppaal!InstantiationList.add(redefinedTemplates));
+	return self;
+}
+
+operation Uppaal!SystemDeclarations addTemplateDeclaration(redefinedTemplate : Uppaal!RedefinedTemplate) : Uppaal!SystemDeclarations {
+	return self.addTemplateDeclarations(Sequence{redefinedTemplate});
+}
+
+operation Uppaal!SystemDeclarations createRedefinedTemplate(name : String, template : Uppaal!Template) : Uppaal!RedefinedTemplate {
+	var r = template.createRedefinedTemplate(name);
+	var templateDeclaration = new Uppaal!TemplateDeclaration.set(r);
+	self.declaration.add(templateDeclaration);
+	return r;
+}
+
+operation Animo!Edge getCatalyst() : Animo!Node {
+	return self.scenario == 2 ? self._REACTANT_E1 : self.source;
+}
+
+operation Animo!Edge getReactant() : Animo!Node {
+	return self.scenario == 2 ? self._REACTANT_E2 : self.target;
+}
+
+operation Animo!Edge getId() : String {
+	return (self.getCatalyst().getId() + "_" + self.getReactant().getId()) + (self.target == self.getReactant() ? "" : "_" + self.target.getId());
+}
+
+operation Animo!Node getId() : String {
+	return "R" + self.index;
+}
+
+operation Animo!Node hasInfluencingReactions(enabledEdges : Collection) : Boolean {
+	return enabledEdges.exists(edge|edge.target == self);
+}
+
+operation Animo!Node getInfluencingReactions(enabledEdges : Collection) : Collection {
+	return enabledEdges.select(edge|edge.target == self);
+}
+
+operation Animo!Edge getActiveR1() : Boolean {
+	var r;
+	if (self.scenario == 0 or self.scenario == 1) {
+		r = true;
+	} 
+	else if (self.scenario == 2) {
+		r = self._REACTANT_ACT_E1;
+	} 
+	else {
+		r = true;
+	}
+	return r;
+}
+
+operation Animo!Edge getActiveR2() : Boolean {
+	var r;
+	if (self.scenario == 0 or self.scenario == 1) {
+		r = self.increment < 0;
+	} 
+	else if (self.scenario == 2) {
+		r = self._REACTANT_ACT_E2;
+	} 
+	else {
+		r = true;
+	}
+	return r;
+}
+
+operation Collection reindex() : Collection {
+	var r = Sequence {};
+	var i = 0;
+	var sortedNodes = self.sortBy(node|node.canonicalName != null ? node.canonicalName : (node.name != null ? node.name : node.SUID ));
+	for (node in sortedNodes) {
+		node.index = i;
+		r.add(node);
+		i++;
+	}
+	return r;
+}

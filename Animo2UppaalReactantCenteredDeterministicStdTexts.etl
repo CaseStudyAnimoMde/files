@@ -1,0 +1,424 @@
+operation getTimeTStructText() : String {
+return
+"typedef int[-1, 1073741822]";	
+}
+
+operation getDoubleTStructText() : String {
+return
+"typedef struct {
+	int[-99980001, 99980001] b;
+	int e;
+}";	
+}
+
+operation getTimeActivityStructText() : String {
+return
+"typedef struct {
+	time_t T;
+}";		
+}
+
+operation getEnterCritFunctionBodyText() : String {
+return
+"
+	criticalSession[id] = true;
+	if (id &lt; minCrit) {
+		minCrit = id;
+	}
+";	
+}
+
+operation getExitCritFunctionBodyText() : String {
+return
+"
+	criticalSession[id] = false;
+	if (id == minCrit) {
+		while (minCrit &lt; N_REACTANTS &amp;&amp; !criticalSession[minCrit]) minCrit++;
+	}
+";		
+}
+
+operation getSubtractFunctionBodyText() : String {
+return
+" // a - b
+	double_t r = {-1000, -1000};
+	if (a.b == 0) {
+		r.b = -b.b;
+		r.e = b.e;
+		return r;
+	}
+	if (b.b == 0) {
+		return a;
+	}
+	if ((a.e - b.e) &gt;= 4) return a;
+	if ((b.e - a.e) &gt;= 4) {
+		r.b = -b.b;
+		r.e = b.e;
+		return r;
+	}
+	if (a.e == b.e) {
+		r.b = a.b - b.b;
+		r.e = a.e;
+	}
+	if (a.e - b.e == 1) {
+		r.b = a.b - b.b/10;
+		r.e = a.e;
+	}
+	if (a.e - b.e == 2) {
+		r.b = a.b - b.b/100;
+		r.e = a.e;
+	}
+	if (a.e - b.e == 3) {
+		r.b = a.b - b.b/1000;
+		r.e = a.e;
+	}
+	if (b.e - a.e == 1) {
+		r.b = a.b/10 - b.b;
+		r.e = b.e;
+	}
+	if (b.e - a.e == 2) {
+		r.b = a.b/100 - b.b;
+		r.e = b.e;
+	}
+	if (b.e - a.e == 3) {
+		r.b = a.b/1000 - b.b;
+		r.e = b.e;
+	}
+	if ((r.b &gt; 0 &amp;&amp; r.b &lt; 10) || (r.b &lt; 0 &amp;&amp; r.b &gt; -10)) {
+		r.b = r.b * 1000;
+		r.e = r.e - 3;
+	} else if ((r.b &gt; 0 &amp;&amp; r.b &lt; 100) || (r.b &lt; 0 &amp;&amp; r.b &gt; -100)) {
+		r.b = r.b * 100;
+		r.e = r.e - 2;
+	} else if ((r.b &gt; 0 &amp;&amp; r.b &lt; 1000) || (r.b &lt; 0 &amp;&amp; r.b &gt; -1000)) {
+		r.b = r.b * 10;
+		r.e = r.e - 1;
+	} else if (r.b &gt; 9999 || r.b &lt; -9999) {
+		r.b = r.b / 10;
+		r.e = r.e + 1;
+	}
+	return r
+";	
+}
+
+operation getAddFunctionBodyText() : String {
+return
+" // a + b
+	double_t r = {-1000,-1000};
+	if (a.b == 0) {
+		return b;
+	}
+	if (b.b == 0) {
+		return a;
+	}
+	if ((a.e - b.e) &gt;= 4) return a;
+	if ((b.e - a.e) &gt;= 4) return b;
+	if (a.e == b.e) {
+		r.b = a.b + b.b;
+		r.e = a.e;
+	}
+	if (a.e - b.e == 1) {
+		r.b = a.b + b.b/10;
+		r.e = a.e;
+	}
+	if (a.e - b.e == 2) {
+		r.b = a.b + b.b/100;
+		r.e = a.e;
+	}
+	if (a.e - b.e == 3) {
+		r.b = a.b + b.b/1000;
+		r.e = a.e;
+	}
+	if (b.e - a.e == 1) {
+		r.b = a.b/10 + b.b;
+		r.e = b.e;
+	}
+	if (b.e - a.e == 2) {
+		r.b = a.b/100 + b.b;
+		r.e = b.e;
+	}
+	if (b.e - a.e == 3) {
+		r.b = a.b/1000 + b.b;
+		r.e = b.e;
+	}
+	if ((r.b &gt; 0 &amp;&amp; r.b &lt; 10) || (r.b &lt; 0 &amp;&amp; r.b &gt; -10)) {
+		r.b = r.b * 1000;
+		r.e = r.e - 3;
+	} else if ((r.b &gt; 0 &amp;&amp; r.b &lt; 100) || (r.b &lt; 0 &amp;&amp; r.b &gt; -100)) {
+		r.b = r.b * 100;
+		r.e = r.e - 2;
+	} else if ((r.b &gt; 0 &amp;&amp; r.b &lt; 1000) || (r.b &lt; 0 &amp;&amp; r.b &gt; -1000)) {
+		r.b = r.b * 10;
+		r.e = r.e - 1;
+	} else if (r.b &gt; 9999 || r.b &lt; -9999) {
+		r.b = r.b / 10;
+		r.e = r.e + 1;
+	}
+	return r
+";	
+}
+
+operation getMultiplyFunctionBodyText() : String {
+return
+" // a * b
+	double_t r;
+	r.b = a.b * b.b;
+	if (r.b % 1000 &lt; 500) {
+		r.b = r.b / 1000;
+	} else {
+		r.b = 1 + r.b / 1000;
+	}
+	r.e = a.e + b.e + 3;
+	if ((r.b &gt; 0 &amp;&amp; r.b &lt; 10) || (r.b &lt; 0 &amp;&amp; r.b &gt; -10)) {
+		r.b = r.b * 1000;
+		r.e = r.e - 3;
+	} else if ((r.b &gt; 0 &amp;&amp; r.b &lt; 100) || (r.b &lt; 0 &amp;&amp; r.b &gt; -100)) {
+		r.b = r.b * 100;
+		r.e = r.e - 2;
+	} else if ((r.b &gt; 0 &amp;&amp; r.b &lt; 1000) || (r.b &lt; 0 &amp;&amp; r.b &gt; -1000)) {
+		r.b = r.b * 10;
+		r.e = r.e - 1;
+	}
+	while (r.b &gt; 9999 || r.b &lt; -9999) {
+		r.b = r.b / 10;
+		r.e = r.e + 1;
+	}
+	return r
+";	
+}
+
+operation getInverseFunctionBodyText() : String {
+return
+" // 1 / a
+	double_t r;
+	if (a.b == 0) {
+		//conta_inf = conta_inf + 1;
+		return INFINITE_TIME_DOUBLE;
+	}
+	if (a.e &lt; -12) { // 1 / 1e-9 is still ok, but 1 / 1e-10 is too large (&gt; 2^30 - 2, the largest allowed constant for guards/invariants)
+		conta_bigN = conta_bigN + 1;
+		r.b = 1073;
+		r.e = 6;
+		return r;
+	}
+	r.b = 10000000 / a.b;
+	r.e = -7 - a.e;
+	if ((r.b &gt; 0 &amp;&amp; r.b &lt; 10) || (r.b &lt; 0 &amp;&amp; r.b &gt; -10)) {
+		r.b = r.b * 1000;
+		r.e = r.e - 3;
+	} else if ((r.b &gt; 0 &amp;&amp; r.b &lt; 100) || (r.b &lt; 0 &amp;&amp; r.b &gt; -100)) {
+		r.b = r.b * 100;
+		r.e = r.e - 2;
+	} else if ((r.b &gt; 0 &amp;&amp; r.b &lt; 1000) || (r.b &lt; 0 &amp;&amp; r.b &gt; -1000)) {
+		r.b = r.b * 10;
+		r.e = r.e - 1;
+	}
+	return r
+";	
+}
+
+operation getPowerFunctionBodyText() : String {
+return
+" // a ^ b (b &gt;= 0)
+	time_t r = 1;
+	while (b &gt; 0) {
+		r = r * a;
+		b = b - 1;
+	}
+	return r
+";	
+}
+
+operation getRoundFunctionBodyText() : String {
+return
+" // double --&gt; integer
+	if (a == INFINITE_TIME_DOUBLE) { // Don't need to translate literally if we have infinite
+		return INFINITE_TIME;
+	}
+	if (a.e &lt; -4) {
+		return 0;
+	}
+	if (a.e == -1) {
+		if (a.b % 10 &lt; 5) {
+			return a.b / 10;
+		} else {
+			return 1 + a.b / 10;
+		}
+	}
+	if (a.e == -2) {
+		if (a.b % 100 &lt; 50) {
+			return a.b / 100;
+		} else {
+			return 1 + a.b / 100;
+		}
+	}
+	if (a.e == -3) {
+		if (a.b % 1000 &lt; 500) {
+			return a.b / 1000;
+		} else {
+			return 1 + a.b / 1000;
+		}
+	}
+	if (a.e == -4) {
+		if (a.b &lt; 5000) return 0;
+		else return 1;
+	}
+	return a.b * power(10, a.e)
+";	
+}
+
+operation getScenario1FunctionBodyText() : String {
+return
+"
+	double_t E;
+	if (r1Active) { //If we depend on active R1, the level of activity is the value of E
+		E = r1;
+	} else { //otherwise we find the inactivity level via the total number of levels
+		E = subtract(r1Levels, r1);
+	}
+	return multiply(k, E)
+";	
+}
+
+operation getScenario2_3FunctionBodyText() : String {
+return
+"
+	double_t E, S;
+	if (r1Active) { //If we depend on active R1, the level of activity is the value of E
+		E = r1;
+	} else { //otherwise we find the inactivity level via the total number of levels
+		E = subtract(r1Levels, r1);
+	}
+	if (r2Active) { //Same for R2
+		S = r2;
+	} else {
+		S = subtract(r2Levels, r2);
+	}
+	return multiply(k, multiply(E, S))
+";	
+}
+
+operation getIntTodoubleFunctionBodyText() : String {
+return
+" //Used to translate an activity level into double.
+	double_t r;
+	if (a &lt; 10) {
+		r.b = a * 1000;
+		r.e = -3;
+	} else if (a &lt; 100) {
+		r.b = a * 100;
+		r.e = -2;
+	} else if (a &lt; 1000) {
+		r.b = a * 10;
+		r.e = -1;
+	} else if (a &lt; 10000) { //Our model supports up to 100 levels, so this should be the most it makes sense to check
+		r.b = a;
+		r.e = 0;
+	}
+	return r
+";	
+}
+
+operation getReactFunctionBodyText() : String {
+return
+"
+	if (0 &lt;= R + delta &amp;&amp; R + delta &lt;= MAX) {
+		R = R + delta;
+	}
+";
+}
+
+operation getMakeUrgentFunctionBodyText() : String {
+return
+"
+	c = 0;
+	tU = 0;
+	tL = 0
+";
+}
+
+operation getRateSignificantlyChangedFunctionBodyText() : String {
+return
+" //True if the new rate is at least double the old one, or if the sign of the rates is different (the reaction changes direction. Note that no change of direction will be detected if we are at MAX or 0, or we were constant until now)
+	if ((oldRate.b &lt; 0 &amp;&amp; newRate.b &gt; 0 || oldRate.b &gt; 0 &amp;&amp; newRate.b &lt; 0) &amp;&amp; (R &lt; MAX &amp;&amp; R &gt; 0)) {
+		return true;
+	}
+	return false
+";
+}
+
+operation getDecideResetFunctionBodyText() : String {
+return
+"
+	if (rate_significantly_changed(oldRate, totalRate)) { //If the updated conditions have significantly changed the rate, restart the reaction from the beginning, without considering the work already done.
+		c = 0;
+	}
+";
+}
+
+operation getCanReactFunctionBodyText() : String {
+return
+"
+	return minCrit == N_REACTANTS &amp;&amp; (tL != INFINITE_TIME &amp;&amp; ((delta &gt;= 0 &amp;&amp; R &lt; MAX) || (delta &lt; 0 &amp;&amp; R &gt; 0)))
+";
+}
+
+operation getCantReactFunctionBodyText() : String {
+return
+"
+	return minCrit == N_REACTANTS &amp;&amp; (tL == INFINITE_TIME || (delta &gt;= 0 &amp;&amp; R == MAX) || (delta &lt; 0 &amp;&amp; R == 0))
+";
+}
+
+operation getUpdateFunctionBodyTextUncertaintyPresent() : String {
+return
+"
+	oldRate = totalRate;
+	totalRate = compute_rate();
+	if (totalRate.b &lt; 0) {
+		delta = -1;
+		totalRate.b = -totalRate.b;
+	} else {
+		delta = 1;
+	}
+	if (totalRate.b != 0) {
+		tL = round(multiply(inverse(totalRate), LOWER_UNC));
+		tU = round(multiply(inverse(totalRate), UPPER_UNC));
+		if (tL &lt; 1) tL = 1; // Ensure that the minimal duration for a reaction is 1 t.u., otherwise the model will behave nondeterministically
+		if (tU &lt; 1) tU = 1;
+	} else {
+		tL = INFINITE_TIME;
+		tU = INFINITE_TIME;
+	}
+	if (tL != INFINITE_TIME &amp;&amp; tL &gt; tU) { //We use rounded things: maybe the difference between tL and tU was not so large, and with some rounding problems we could have this case
+		tL = tU;
+	}
+";
+}
+
+operation getUpdateFunctionBodyTextUncertaintyNotPresent() : String {
+return
+"
+	oldRate = totalRate;
+	totalRate = compute_rate();
+	if (totalRate.b &lt; 0) {
+		delta = -1;
+		totalRate.b = -totalRate.b;
+	} else {
+		delta = 1;
+	}
+	if (totalRate.b != 0) {
+		tL = round(inverse(totalRate));
+		tU = tL;
+		if (tL &lt; 1) tL = 1; // Ensure that the minimal duration for a reaction is 1 t.u., otherwise the model will behave nondeterministically
+		if (tU &lt; 1) tU = 1;
+	} else {
+		tL = INFINITE_TIME;
+		tU = INFINITE_TIME;
+	}
+	if (tL != INFINITE_TIME &amp;&amp; tL &gt; tU) { //We use rounded things: maybe the difference between tL and tU was not so large, and with some rounding problems we could have this case
+		tL = tU;
+	}
+";
+}
+
