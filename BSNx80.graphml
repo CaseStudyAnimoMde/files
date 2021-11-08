@@ -1,0 +1,2519 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+    <key attr.name="SUID" attr.type="long" for="node" id="SUID"/>
+    <key attr.name="shared name" attr.type="string" for="node" id="shared name"/>
+    <key attr.name="name" attr.type="string" for="node" id="name"/>
+    <key attr.name="selected" attr.type="boolean" for="node" id="selected"/>
+    <key attr.name="canonicalName" attr.type="string" for="node" id="canonicalName"/>
+    <key attr.name="description" attr.type="string" for="node" id="description"/>
+    <key attr.name="enabled" attr.type="boolean" for="node" id="enabled"/>
+    <key attr.name="initialConcentration" attr.type="int" for="node" id="initialConcentration"/>
+    <key attr.name="levels" attr.type="int" for="node" id="levels"/>
+    <key attr.name="moleculeType" attr.type="string" for="node" id="moleculeType"/>
+    <key attr.name="plotted" attr.type="boolean" for="node" id="plotted"/>
+    <key attr.name="activityRatio" attr.type="double" for="node" id="activityRatio"/>
+    <key attr.name="degree.layout" attr.type="int" for="node" id="degree.layout"/>
+    <key attr.name="randomInitialConcentration" attr.type="boolean" for="node" id="randomInitialConcentration"/>
+    <key attr.name="SUID" attr.type="long" for="edge" id="SUID"/>
+    <key attr.name="shared name" attr.type="string" for="edge" id="shared name"/>
+    <key attr.name="shared interaction" attr.type="string" for="edge" id="shared interaction"/>
+    <key attr.name="name" attr.type="string" for="edge" id="name"/>
+    <key attr.name="selected" attr.type="boolean" for="edge" id="selected"/>
+    <key attr.name="interaction" attr.type="string" for="edge" id="interaction"/>
+    <key attr.name="activityRatio" attr.type="double" for="edge" id="activityRatio"/>
+    <key attr.name="canonicalName" attr.type="string" for="edge" id="canonicalName"/>
+    <key attr.name="description" attr.type="string" for="edge" id="description"/>
+    <key attr.name="enabled" attr.type="boolean" for="edge" id="enabled"/>
+    <key attr.name="increment" attr.type="int" for="edge" id="increment"/>
+    <key attr.name="scenario" attr.type="int" for="edge" id="scenario"/>
+    <key attr.name="k" attr.type="double" for="edge" id="k"/>
+    <key attr.name="SUID" attr.type="long" for="graph" id="SUID"/>
+    <key attr.name="shared name" attr.type="string" for="graph" id="shared name"/>
+    <key attr.name="name" attr.type="string" for="graph" id="name"/>
+    <key attr.name="selected" attr.type="boolean" for="graph" id="selected"/>
+    <key attr.name="__Annotations" attr.type="string" for="graph" id="__Annotations"/>
+    <key attr.name="levels" attr.type="int" for="graph" id="levels"/>
+    <key attr.name="seconds per point" attr.type="double" for="graph" id="seconds per point"/>
+    <graph edgedefault="directed" id="Network_Example(1)">
+        <node id="538">
+            <data key="SUID">538</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C14</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="537">
+            <data key="SUID">537</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D14</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="536">
+            <data key="SUID">536</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E14</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="535">
+            <data key="SUID">535</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A14</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="534">
+            <data key="SUID">534</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B14</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="533">
+            <data key="SUID">533</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C13</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="532">
+            <data key="SUID">532</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D13</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="531">
+            <data key="SUID">531</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E13</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="530">
+            <data key="SUID">530</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A13</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="529">
+            <data key="SUID">529</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B13</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="528">
+            <data key="SUID">528</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C12</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="527">
+            <data key="SUID">527</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D12</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="526">
+            <data key="SUID">526</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E12</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="525">
+            <data key="SUID">525</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A12</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="524">
+            <data key="SUID">524</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B12</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="523">
+            <data key="SUID">523</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C11</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="522">
+            <data key="SUID">522</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D11</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="521">
+            <data key="SUID">521</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E11</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="520">
+            <data key="SUID">520</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A11</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="519">
+            <data key="SUID">519</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B11</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="518">
+            <data key="SUID">518</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C10</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="517">
+            <data key="SUID">517</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D10</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="516">
+            <data key="SUID">516</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E10</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="515">
+            <data key="SUID">515</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A10</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="514">
+            <data key="SUID">514</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B10</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="513">
+            <data key="SUID">513</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C9</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="512">
+            <data key="SUID">512</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D9</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="511">
+            <data key="SUID">511</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E9</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="510">
+            <data key="SUID">510</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A9</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="509">
+            <data key="SUID">509</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B9</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="508">
+            <data key="SUID">508</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C8</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="507">
+            <data key="SUID">507</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D8</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="506">
+            <data key="SUID">506</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E8</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="505">
+            <data key="SUID">505</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A8</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="504">
+            <data key="SUID">504</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B8</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="503">
+            <data key="SUID">503</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C7</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="502">
+            <data key="SUID">502</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D7</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="501">
+            <data key="SUID">501</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E7</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="500">
+            <data key="SUID">500</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A7</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="499">
+            <data key="SUID">499</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B7</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="498">
+            <data key="SUID">498</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A2</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="497">
+            <data key="SUID">497</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B2</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="496">
+            <data key="SUID">496</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C2</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="495">
+            <data key="SUID">495</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D2</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="494">
+            <data key="SUID">494</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E2</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="493">
+            <data key="SUID">493</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A1</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="492">
+            <data key="SUID">492</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B1</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="491">
+            <data key="SUID">491</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C1</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="490">
+            <data key="SUID">490</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D1</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="489">
+            <data key="SUID">489</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E1</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="488">
+            <data key="SUID">488</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C15</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="487">
+            <data key="SUID">487</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D15</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="486">
+            <data key="SUID">486</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E15</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="485">
+            <data key="SUID">485</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A15</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="484">
+            <data key="SUID">484</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B15</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="447">
+            <data key="SUID">447</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B0</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="446">
+            <data key="SUID">446</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C0</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="445">
+            <data key="SUID">445</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D0</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="444">
+            <data key="SUID">444</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E0</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="448">
+            <data key="SUID">448</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A0</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="483">
+            <data key="SUID">483</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C3</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="482">
+            <data key="SUID">482</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D3</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="481">
+            <data key="SUID">481</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E3</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="480">
+            <data key="SUID">480</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A3</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="479">
+            <data key="SUID">479</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B3</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="478">
+            <data key="SUID">478</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C4</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="477">
+            <data key="SUID">477</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D4</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="476">
+            <data key="SUID">476</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E4</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="475">
+            <data key="SUID">475</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A4</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="474">
+            <data key="SUID">474</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B4</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="473">
+            <data key="SUID">473</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C5</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="472">
+            <data key="SUID">472</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D5</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="471">
+            <data key="SUID">471</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E5</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="470">
+            <data key="SUID">470</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A5</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="469">
+            <data key="SUID">469</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B5</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="468">
+            <data key="SUID">468</data>
+            <data key="shared name">Node 3</data>
+            <data key="name">Node 3</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">C6</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Other</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="467">
+            <data key="SUID">467</data>
+            <data key="shared name">Node 4</data>
+            <data key="name">Node 4</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">D6</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">100</data>
+            <data key="moleculeType">Kinase</data>
+            <data key="plotted">true</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">2</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="466">
+            <data key="SUID">466</data>
+            <data key="shared name">Node 5</data>
+            <data key="name">Node 5</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">E6</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">1</data>
+            <data key="levels">1</data>
+            <data key="moleculeType">Phosphatase</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="465">
+            <data key="SUID">465</data>
+            <data key="shared name">Node 1</data>
+            <data key="name">Node 1</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">A6</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">15</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Cytokine</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">1.0</data>
+            <data key="degree.layout">1</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <node id="464">
+            <data key="SUID">464</data>
+            <data key="shared name">Node 2</data>
+            <data key="name">Node 2</data>
+            <data key="selected">false</data>
+            <data key="canonicalName">B6</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="initialConcentration">0</data>
+            <data key="levels">15</data>
+            <data key="moleculeType">Receptor</data>
+            <data key="plotted">false</data>
+            <data key="activityRatio">0.0</data>
+            <data key="degree.layout">4</data>
+            <data key="randomInitialConcentration">false</data>
+        </node>
+        <edge source="538" target="534">
+            <data key="SUID">613</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C14 --| B14</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="536" target="537">
+            <data key="SUID">612</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E14 --| D14</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="535" target="534">
+            <data key="SUID">611</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A14 --&gt; B14</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="534" target="538">
+            <data key="SUID">610</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B14 --&gt; C14</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="534" target="537">
+            <data key="SUID">609</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B14 --&gt; D14</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="533" target="529">
+            <data key="SUID">608</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C13 --| B13</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="531" target="532">
+            <data key="SUID">607</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E13 --| D13</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="530" target="529">
+            <data key="SUID">606</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A13 --&gt; B13</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="529" target="533">
+            <data key="SUID">605</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B13 --&gt; C13</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="529" target="532">
+            <data key="SUID">604</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B13 --&gt; D13</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="528" target="524">
+            <data key="SUID">603</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C12 --| B12</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="526" target="527">
+            <data key="SUID">602</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E12 --| D12</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="525" target="524">
+            <data key="SUID">601</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A12 --&gt; B12</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="524" target="528">
+            <data key="SUID">600</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B12 --&gt; C12</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="524" target="527">
+            <data key="SUID">599</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B12 --&gt; D12</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="523" target="519">
+            <data key="SUID">598</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C11 --| B11</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="521" target="522">
+            <data key="SUID">597</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E11 --| D11</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="520" target="519">
+            <data key="SUID">596</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A11 --&gt; B11</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="519" target="523">
+            <data key="SUID">595</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B11 --&gt; C11</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="519" target="522">
+            <data key="SUID">594</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B11 --&gt; D11</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="518" target="514">
+            <data key="SUID">593</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C10 --| B10</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="516" target="517">
+            <data key="SUID">592</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E10 --| D10</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="515" target="514">
+            <data key="SUID">591</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A10 --&gt; B10</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="514" target="518">
+            <data key="SUID">590</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B10 --&gt; C10</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="514" target="517">
+            <data key="SUID">589</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B10 --&gt; D10</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="513" target="509">
+            <data key="SUID">588</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C9 --| B9</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="511" target="512">
+            <data key="SUID">587</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E9 --| D9</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="510" target="509">
+            <data key="SUID">586</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A9 --&gt; B9</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="509" target="513">
+            <data key="SUID">585</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B9 --&gt; C9</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="509" target="512">
+            <data key="SUID">584</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B9 --&gt; D9</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="508" target="504">
+            <data key="SUID">583</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C8 --| B8</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="506" target="507">
+            <data key="SUID">582</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E8 --| D8</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="505" target="504">
+            <data key="SUID">581</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A8 --&gt; B8</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="504" target="508">
+            <data key="SUID">580</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B8 --&gt; C8</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="504" target="507">
+            <data key="SUID">579</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B8 --&gt; D8</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="503" target="499">
+            <data key="SUID">578</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C7 --| B7</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="501" target="502">
+            <data key="SUID">577</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E7 --| D7</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="500" target="499">
+            <data key="SUID">576</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A7 --&gt; B7</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="499" target="503">
+            <data key="SUID">575</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B7 --&gt; C7</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="499" target="502">
+            <data key="SUID">574</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B7 --&gt; D7</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="498" target="497">
+            <data key="SUID">573</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A2 --&gt; B2</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="497" target="496">
+            <data key="SUID">572</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B2 --&gt; C2</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="497" target="495">
+            <data key="SUID">571</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B2 --&gt; D2</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="496" target="497">
+            <data key="SUID">570</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C2 --| B2</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="494" target="495">
+            <data key="SUID">569</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E2 --| D2</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="493" target="492">
+            <data key="SUID">568</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A1 --&gt; B1</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="492" target="491">
+            <data key="SUID">567</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B1 --&gt; C1</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="492" target="490">
+            <data key="SUID">566</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B1 --&gt; D1</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="491" target="492">
+            <data key="SUID">565</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C1 --| B1</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="489" target="490">
+            <data key="SUID">564</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E1 --| D1</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="488" target="484">
+            <data key="SUID">563</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C15 --| B15</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="486" target="487">
+            <data key="SUID">562</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E15 --| D15</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="485" target="484">
+            <data key="SUID">561</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A15 --&gt; B15</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="484" target="488">
+            <data key="SUID">560</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B15 --&gt; C15</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="484" target="487">
+            <data key="SUID">559</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B15 --&gt; D15</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="447" target="445">
+            <data key="SUID">451</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B0 --&gt; D0</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="447" target="446">
+            <data key="SUID">452</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B0 --&gt; C0</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="446" target="447">
+            <data key="SUID">450</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C0 --| B0</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="444" target="445">
+            <data key="SUID">449</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E0 --| D0</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="448" target="447">
+            <data key="SUID">453</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A0 --&gt; B0</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="483" target="479">
+            <data key="SUID">558</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C3 --| B3</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="481" target="482">
+            <data key="SUID">557</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E3 --| D3</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="480" target="479">
+            <data key="SUID">556</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A3 --&gt; B3</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="479" target="483">
+            <data key="SUID">555</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B3 --&gt; C3</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="479" target="482">
+            <data key="SUID">554</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B3 --&gt; D3</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="478" target="474">
+            <data key="SUID">553</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C4 --| B4</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="476" target="477">
+            <data key="SUID">552</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E4 --| D4</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="475" target="474">
+            <data key="SUID">551</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A4 --&gt; B4</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="474" target="478">
+            <data key="SUID">550</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B4 --&gt; C4</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="474" target="477">
+            <data key="SUID">549</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B4 --&gt; D4</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="473" target="469">
+            <data key="SUID">548</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C5 --| B5</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="471" target="472">
+            <data key="SUID">547</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E5 --| D5</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="470" target="469">
+            <data key="SUID">546</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A5 --&gt; B5</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="469" target="473">
+            <data key="SUID">545</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B5 --&gt; C5</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="469" target="472">
+            <data key="SUID">544</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B5 --&gt; D5</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="468" target="464">
+            <data key="SUID">543</data>
+            <data key="shared name">Node 3 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 3 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">C6 --| B6</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.008</data>
+        </edge>
+        <edge source="466" target="467">
+            <data key="SUID">542</data>
+            <data key="shared name">Node 5 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 5 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">E6 --| D6</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">-1</data>
+            <data key="scenario">1</data>
+            <data key="k">0.001</data>
+        </edge>
+        <edge source="465" target="464">
+            <data key="SUID">541</data>
+            <data key="shared name">Node 1 (interacts with) Node 2</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 1 (interacts with) Node 2</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">A6 --&gt; B6</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.004</data>
+        </edge>
+        <edge source="464" target="468">
+            <data key="SUID">540</data>
+            <data key="shared name">Node 2 (interacts with) Node 3</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 3</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B6 --&gt; C6</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+        <edge source="464" target="467">
+            <data key="SUID">539</data>
+            <data key="shared name">Node 2 (interacts with) Node 4</data>
+            <data key="shared interaction">interacts with</data>
+            <data key="name">Node 2 (interacts with) Node 4</data>
+            <data key="selected">false</data>
+            <data key="interaction">interacts with</data>
+            <data key="activityRatio">0.25</data>
+            <data key="canonicalName">B6 --&gt; D6</data>
+            <data key="description"/>
+            <data key="enabled">true</data>
+            <data key="increment">1</data>
+            <data key="scenario">0</data>
+            <data key="k">0.002</data>
+        </edge>
+    </graph>
+</graphml>
